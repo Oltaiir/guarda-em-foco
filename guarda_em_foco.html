@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guarda em Foco</title>
+<style>
+:root{--bg:#101a17;--panel:#1b2924;--green:#b8e36b;--text:#f5f7f2;--muted:#b5c0b8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+header{padding:24px 18px;background:#19271f;border-bottom:1px solid #34463a}
+header h1{margin:0;color:var(--green);font-size:27px}
+header p{margin:8px 0 0;color:var(--muted)}
+main{max-width:900px;margin:auto;padding:18px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+button{cursor:pointer;border:0;border-radius:9px;padding:12px 15px;font-weight:bold}
+nav button{background:var(--panel);color:var(--text)}
+nav button.active,.primary{background:var(--green);color:#172017}
+.card{background:var(--panel);padding:18px;border-radius:14px;margin-bottom:14px}
+h2{margin-top:0}h3{color:var(--green)}
+.muted{color:var(--muted)}
+.statrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:#25372e;padding:14px;border-radius:10px}
+.stat strong{display:block;font-size:25px;color:var(--green);margin-bottom:5px}
+.option{display:block;width:100%;text-align:left;margin:8px 0;background:#304139;color:white}
+.option:hover{background:#405648}
+.correct{background:#276b42!important}.wrong{background:#823b3b!important}
+input[type=checkbox]{transform:scale(1.2);margin-right:9px}
+.progress{height:10px;background:#39483f;border-radius:10px;overflow:hidden}
+.progress div{height:100%;background:var(--green);width:0}
+.hidden{display:none}
+footer{text-align:center;padding:24px;color:var(--muted);font-size:13px}
+@media(max-width:550px){.statrow{grid-template-columns:1fr}header h1{font-size:23px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🛡️ Guarda em Foco</h1>
+  <p>Preparação para a Guarda Municipal de Paulínia</p>
+</header>
+<main>
+<nav>
+  <button class="active" onclick="show('inicio',this)">Início</button>
+  <button onclick="show('materias',this)">Matérias</button>
+  <button onclick="show('simulado',this)">Simulado</button>
+  <button onclick="show('plano',this)">Plano de estudos</button>
+</nav>
+
+<section id="inicio">
+  <div class="card">
+    <h2>Seu treinamento começa aqui</h2>
+    <p class="muted">Estude um pouco todos os dias e acompanhe sua evolução.</p>
+    <div class="statrow">
+      <div class="stat"><strong id="feitas">0</strong>Questões respondidas</div>
+      <div class="stat"><strong id="acertos">0</strong>Acertos</div>
+      <div class="stat"><strong id="percentual">0%</strong>Aproveitamento</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Progresso do plano</h3>
+    <div class="progress"><div id="barra"></div></div>
+    <p id="progressoTexto" class="muted">0 de 6 tarefas concluídas</p>
+    <button class="primary" onclick="show('simulado',document.querySelectorAll('nav button')[2])">Começar simulado</button>
+  </div>
+  <div class="card">
+    <h3>Dica de estudo</h3>
+    Leia a teoria, resolva questões e revise principalmente os erros. Confira sempre o edital vigente da sua seleção.
+  </div>
+</section>
+
+<section id="materias" class="hidden">
+  <div class="card"><h2>Matérias para estudar</h2>
+  <p class="muted">Selecione uma matéria para ver os tópicos principais.</p>
+  <button class="option" onclick="topic('Constituição Federal','Artigos 1º a 4º: fundamentos da República, objetivos fundamentais e relações internacionais. Artigo 5º: direitos e garantias individuais. Artigo 6º: direitos sociais.')">Direito Constitucional</button>
+  <button class="option" onclick="topic('Direitos Humanos','Estude dignidade humana, igualdade, liberdade, Declaração Universal dos Direitos Humanos e proteção dos direitos fundamentais.')">Direitos Humanos</button>
+  <button class="option" onclick="topic('Legislação de trânsito','Revise sinalização, circulação, condutas, infrações, penalidades e regras do Código de Trânsito Brasileiro.')">Legislação de Trânsito</button>
+  <button class="option" onclick="topic('Legislação da Guarda Municipal','Estude o Estatuto Geral das Guardas Municipais (Lei 13.022/2014), competências, princípios mínimos e atuação preventiva.')">Legislação da Guarda</button>
+  <button class="option" onclick="topic('Língua Portuguesa','Interpretação de texto, ortografia, acentuação, pontuação, concordância, regência e crase.')">Língua Portuguesa</button>
+  <button class="option" onclick="topic('Matemática e raciocínio lógico','Porcentagem, razão e proporção, regra de três, operações, sequências e problemas lógicos.')">Matemática e Raciocínio Lógico</button>
+  <button class="option" onclick="topic('Conhecimentos gerais','Acompanhe fatos relevantes do Brasil e do mundo, cidadania, meio ambiente, história e geografia, conforme o edital.')">Conhecimentos Gerais</button>
+  </div>
+  <div class="card hidden" id="topico">
+    <h3 id="topicoTitulo"></h3><p id="topicoTexto"></p>
+  </div>
+</section>
+
+<section id="simulado" class="hidden">
+  <div class="card">
+    <h2>Simulado de treino</h2>
+    <p class="muted">Questões elaboradas para estudo, não oficiais.</p>
+    <p id="contador"></p>
+    <h3 id="pergunta"></h3>
+    <div id="alternativas"></div>
+    <p id="explicacao"></p>
+    <button class="primary hidden" id="proxima" onclick="nextQuestion()">Próxima questão</button>
+    <button class="primary hidden" id="reiniciar" onclick="restart()">Refazer simulado</button>
+  </div>
+</section>
+
+<section id="plano" class="hidden">
+  <div class="card">
+    <h2>Plano de estudos</h2>
+    <p class="muted">Marque as tarefas concluídas. Seu progresso fica salvo neste navegador.</p>
+    <div id="tarefas"></div>
+  </div>
+</section>
+</main>
+<footer>Guarda em Foco • Material de apoio para estudos</footer>
+
+<script>
+const questions=[
+{q:"Segundo o artigo 1º da Constituição Federal, qual é um fundamento da República?",a:["Censura prévia","Dignidade da pessoa humana","Voto indireto obrigatório","Supremacia de um poder sobre os demais"],c:1,e:"A dignidade da pessoa humana é um dos fundamentos da República, previsto no artigo 1º."},
+{q:"Conforme a Constituição, todos são iguais perante a lei sem distinção de:",a:["Somente profissão","Somente escolaridade","Qualquer natureza, nos termos constitucionais","Somente renda"],c:2,e:"O caput do artigo 5º estabelece a igualdade perante a lei, sem distinção de qualquer natureza."},
+{q:"Qual lei institui o Estatuto Geral das Guardas Municipais?",a:["Lei 8.069/1990","Lei 13.022/2014","Lei 9.099/1995","Lei 12.527/2011"],c:1,e:"A Lei Federal 13.022/2014 dispõe sobre o Estatuto Geral das Guardas Municipais."},
+{q:"Qual alternativa apresenta um direito social previsto no artigo 6º da Constituição?",a:["Educação","Censura","Privilégio hereditário","Trabalho forçado"],c:0,e:"Educação é um dos direitos sociais expressamente previstos no artigo 6º."},
+{q:"Em uma questão de interpretação de texto, a resposta deve se basear principalmente:",a:["Em opiniões pessoais","No que o texto permite concluir","Em qualquer informação externa","Na alternativa mais longa"],c:1,e:"A interpretação deve respeitar as informações e inferências justificadas pelo texto."},
+{q:"Quanto é 20% de 150?",a:["15","20","30","35"],c:2,e:"20% de 150 = 0,20 × 150 = 30."},
+{q:"A atuação preventiva da Guarda Municipal deve respeitar:",a:["A Constituição e as leis","Somente ordens informais","A vontade pessoal do agente","Regras diferentes para cada cidadão"],c:0,e:"A atuação dos agentes públicos deve respeitar a Constituição, a legislação e os limites de suas competências."},
+{q:"Qual documento reúne regras gerais sobre circulação e conduta no trânsito brasileiro?",a:["Código Civil","Código de Trânsito Brasileiro","Código Comercial","Estatuto da Criança e do Adolescente"],c:1,e:"O Código de Trânsito Brasileiro é a Lei 9.503/1997."},
+{q:"Se todos os agentes de um grupo fizeram treinamento e Carlos pertence a esse grupo, o que se pode concluir?",a:["Carlos não treinou","Carlos fez o treinamento","Ninguém treinou","Não há nenhuma conclusão possível"],c:1,e:"Se a regra se aplica a todos do grupo e Carlos faz parte dele, Carlos também fez o treinamento."},
+{q:"A Declaração Universal dos Direitos Humanos foi proclamada em:",a:["1948","1964","1988","2001"],c:0,e:"A Declaração Universal dos Direitos Humanos foi adotada pela ONU em 10 de dezembro de 1948."}
+];
+let idx=0, respondeu=false;
+let stats=JSON.parse(localStorage.getItem('gf_stats')||'{"feitas":0,"acertos":0}');
+let tasks=JSON.parse(localStorage.getItem('gf_tasks')||'[false,false,false,false,false,false]');
+function save(){localStorage.setItem('gf_stats',JSON.stringify(stats));localStorage.setItem('gf_tasks',JSON.stringify(tasks));updateStats()}
+function updateStats(){
+document.getElementById('feitas').textContent=stats.feitas;
+document.getElementById('acertos').textContent=stats.acertos;
+document.getElementById('percentual').textContent=(stats.feitas?Math.round(stats.acertos/stats.feitas*100):0)+'%';
+let n=tasks.filter(Boolean).length;
+document.getElementById('barra').style.width=(n/tasks.length*100)+'%';
+document.getElementById('progressoTexto').textContent=n+' de '+tasks.length+' tarefas concluídas';
+}
+function show(id,btn){
+document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));
+document.getElementById(id).classList.remove('hidden');
+document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+if(btn)btn.classList.add('active');
+if(id==='simulado')renderQuestion();
+}
+function topic(t,txt){
+document.getElementById('topico').classList.remove('hidden');
+document.getElementById('topicoTitulo').textContent=t;
+document.getElementById('topicoTexto').textContent=txt;
+}
+function renderQuestion(){
+if(idx>=questions.length){
+document.getElementById('contador').textContent='Simulado concluído!';
+document.getElementById('pergunta').textContent='Você terminou as 10 questões.';
+document.getElementById('alternativas').innerHTML='';
+document.getElementById('explicacao').textContent='Confira seus acertos no painel inicial e revise os tópicos em que teve dificuldade.';
+document.getElementById('proxima').classList.add('hidden');
+document.getElementById('reiniciar').classList.remove('hidden');return;
+}
+respondeu=false;
+let q=questions[idx];
+document.getElementById('contador').textContent='Questão '+(idx+1)+' de '+questions.length;
+document.getElementById('pergunta').textContent=q.q;
+document.getElementById('explicacao').textContent='';
+document.getElementById('proxima').classList.add('hidden');
+document.getElementById('reiniciar').classList.add('hidden');
+let div=document.getElementById('alternativas');div.innerHTML='';
+q.a.forEach((a,i)=>{
+let b=document.createElement('button');b.className='option';b.textContent=String.fromCharCode(65+i)+') '+a;
+b.onclick=()=>answer(i,b);div.appendChild(b);
+});
+}
+function answer(choice,btn){
+if(respondeu)return;respondeu=true;
+let q=questions[idx];stats.feitas++;
+let buttons=document.querySelectorAll('#alternativas button');
+buttons[q.c].classList.add('correct');
+if(choice===q.c){stats.acertos++}else{btn.classList.add('wrong')}
+document.getElementById('explicacao').textContent=(choice===q.c?'Correto! ':'Resposta correta: '+String.fromCharCode(65+q.c)+'. ')+q.e;
+document.getElementById('proxima').classList.remove('hidden');save();
+}
+function nextQuestion(){idx++;renderQuestion()}
+function restart(){idx=0;renderQuestion()}
+const taskNames=['Estudar Língua Portuguesa','Revisar Constituição Federal','Estudar Lei 13.022/2014','Revisar Direitos Humanos','Resolver questões Vunesp','Revisar os erros do simulado'];
+function renderTasks(){
+let el=document.getElementById('tarefas');el.innerHTML='';
+taskNames.forEach((t,i)=>{
+let label=document.createElement('label');label.style.display='block';label.style.padding='12px 0';
+let cb=document.createElement('input');cb.type='checkbox';cb.checked=tasks[i];
+cb.onchange=()=>{tasks[i]=cb.checked;save()};
+label.appendChild(cb);label.appendChild(document.createTextNode(t));el.appendChild(label);
+});
+}
+renderTasks();updateStats();
+</script>
+</body>
+</html>
