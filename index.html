@@ -1,27 +1,24 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Guarda em Foco - Preparatório Múltiplo</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#071426">
+<title>Guarda em Foco</title>
+
 <style>
 :root {
-  --bg: #0b132b;
-  --panel: #1c2541;
-  --panel-accent: #232f52;
-  --gold: #f4c430;
-  --gold-hover: #d4a318;
-  --text: #f0f4f8;
-  --muted: #8d99ae;
-  --line: #2e3a59;
-  --success: #2a9d8f;
-  --error: #e63946;
-  --radius: 12px;
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --bg: #071426;
+  --panel: #10233d;
+  --panel2: #142b49;
+  --gold: #d4af37;
+  --gold-light: #f0d778;
+  --text: #f5f7fb;
+  --muted: #b8c4d6;
+  --border: #304765;
+  --green: #24794f;
+  --red: #873b43;
 }
 
 * { box-sizing: border-box; }
@@ -30,377 +27,933 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  line-height: 1.6;
+  font-family: Arial, sans-serif;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
-header {
-  background: rgba(12, 22, 45, 0.95);
-  border-bottom: 1px solid var(--line);
-  padding: 16px 20px;
-  backdrop-filter: blur(8px);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.head-container {
-  max-width: 1000px;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.brand-icon {
-  font-size: 28px;
-}
-
-h1 {
-  color: #ffffff;
-  font-size: 20px;
-  font-weight: 700;
-  margin: 0;
-  letter-spacing: -0.5px;
-}
-
-h1 span {
-  color: var(--gold);
-}
-
-.subtitle {
-  color: var(--muted);
-  font-size: 13px;
-  margin: 0;
-}
-
-main {
-  max-width: 1000px;
-  margin: 20px auto;
-  padding: 0 20px;
-  width: 100%;
-  flex: 1;
-}
-
-.card {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow);
-}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
 
 .hidden { display: none !important; }
 
-button, input {
-  font-family: inherit;
-  font-size: 14px;
-}
+.gold { color: var(--gold); }
 
-button {
-  cursor: pointer;
-  border: 0;
-  border-radius: 8px;
-  padding: 12px 18px;
-  font-weight: 600;
-  transition: all 0.2s ease;
-  display: inline-flex;
+/* TELA DE LOGIN */
+#authScreen {
+  min-height: 100vh;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  padding: 24px 16px;
+  background:
+    radial-gradient(ellipse at top, #18375a 0%, transparent 55%),
+    var(--bg);
 }
 
-.primary {
-  background: var(--gold);
-  color: #0b132b;
-}
-
-.primary:hover {
-  background: var(--gold-hover);
-  transform: translateY(-1px);
-}
-
-.secondary {
-  background: var(--panel-accent);
-  color: var(--text);
-  border: 1px solid var(--line);
-}
-
-.secondary:hover {
-  background: #2c3a61;
-  border-color: var(--muted);
-}
-
-.nav {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 24px;
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 12px;
-  overflow-x: auto;
-}
-
-.nav button {
-  background: transparent;
-  color: var(--muted);
-  border: 1px solid transparent;
-  padding: 10px 16px;
-  border-radius: 8px;
-  white-space: nowrap;
-}
-
-.nav button:hover {
-  color: var(--text);
-  background: var(--panel-accent);
-}
-
-.nav button.active {
-  background: var(--gold);
-  color: #0b132b;
-  font-weight: 700;
-}
-
-.field-group {
-  margin-bottom: 16px;
-}
-
-.field-group label {
-  display: block;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
-
-.field {
+.auth-card {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--line);
-  background: #0d172e;
-  color: white;
-  outline: none;
-  transition: border-color 0.2s;
+  max-width: 440px;
+  background: rgba(16,35,61,.97);
+  border: 1px solid var(--gold);
+  border-radius: 20px;
+  padding: 30px 25px;
+  box-shadow: 0 18px 55px #0005;
 }
 
-.field:focus {
-  border-color: var(--gold);
+.crest {
+  width: 82px;
+  height: 82px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  color: var(--gold);
+  font-size: 42px;
+  background: #071426;
 }
 
-/* Auth Area styling */
-.auth-wrapper {
-  max-width: 420px;
-  margin: 40px auto;
-}
-
-.auth-header {
+.brand {
+  margin: 0;
   text-align: center;
-  margin-bottom: 24px;
+  color: var(--gold);
+  font-size: 30px;
+  letter-spacing: 1px;
 }
 
-.auth-header h2 {
-  font-size: 22px;
+.tagline {
+  text-align: center;
+  color: var(--muted);
+  margin: 10px 0 25px;
+  line-height: 1.5;
+}
+
+.auth-card h2 {
+  font-size: 21px;
   margin: 0 0 8px;
 }
 
-.auth-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
+.auth-description {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 20px;
 }
+
+.field { margin: 14px 0; }
+
+.field label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 7px;
+  color: var(--muted);
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 13px 12px;
+  border-radius: 9px;
+  border: 1px solid #526782;
+  background: #09182b;
+  color: var(--text);
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px #d4af3725;
+}
+
+.btn {
+  border: 1px solid transparent;
+  border-radius: 9px;
+  padding: 12px 16px;
+  font-weight: bold;
+  transition: .2s;
+}
+
+.btn:hover { filter: brightness(1.1); }
+
+.btn-gold {
+  background: var(--gold);
+  color: #071426;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+.btn-block { width: 100%; }
 
 .auth-links {
   display: flex;
   justify-content: space-between;
-  margin-top: 14px;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 17px;
 }
 
 .auth-links button {
+  border: 0;
   background: none;
-  border: none;
-  color: var(--muted);
-  font-size: 13px;
-  padding: 0;
+  color: var(--gold-light);
+  padding: 5px 0;
   text-decoration: underline;
-}
-
-.auth-links button:hover {
-  color: var(--gold);
+  font-size: 13px;
 }
 
 .message {
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-top: 16px;
+  border-radius: 9px;
+  padding: 11px;
+  margin: 14px 0;
   font-size: 14px;
-  border: 1px solid transparent;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
-.message.info {
-  background: rgba(244, 196, 48, 0.1);
-  border-color: var(--gold);
-  color: var(--gold);
+.message:empty { display: none; }
+.message.error { background: #52252d; color: #ffe3e5; }
+.message.success { background: #174932; color: #d8ffea; }
+.message.info { background: #1b3858; color: #e1efff; }
+
+/* ÁREA DE ESTUDOS */
+header {
+  background: #09182b;
+  border-bottom: 2px solid var(--gold);
+  padding: 20px 18px;
 }
 
-.message.error {
-  background: rgba(230, 57, 70, 0.1);
-  border-color: var(--error);
-  color: var(--error);
-}
-
-/* Dashboard Controls */
-.user-bar {
+.header-inner {
+  max-width: 1050px;
+  margin: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
-  background: var(--panel-accent);
-  border-radius: var(--radius);
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+header h1 {
+  color: var(--gold);
+  margin: 0;
+  font-size: 25px;
+}
+
+header p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.user-area {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.user-email {
+  font-size: 12px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+main {
+  max-width: 1050px;
+  margin: auto;
+  padding: 20px 16px;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 20px;
 }
+
+nav button {
+  background: var(--panel2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 12px 15px;
+  font-weight: bold;
+}
+
+nav button.active,
+nav button:hover {
+  background: var(--gold);
+  color: var(--bg);
+  border-color: var(--gold);
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 15px;
+}
+
+h2 { margin-top: 0; }
+h3 { color: var(--gold); }
+
+p { line-height: 1.6; }
+.muted { color: var(--muted); }
 
 .statrow {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-top: 16px;
+  gap: 12px;
 }
 
 .stat {
-  background: var(--panel-accent);
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 11px;
   padding: 16px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  text-align: center;
 }
 
 .stat strong {
   display: block;
+  font-size: 26px;
   color: var(--gold);
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.stat span {
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.subjects {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 12px;
-  margin-top: 16px;
+  margin-bottom: 6px;
 }
 
 .option {
   display: block;
   width: 100%;
   text-align: left;
-  padding: 14px 16px;
-  background: var(--panel-accent);
-  color: white;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  line-height: 1.4;
+  margin: 9px 0;
+  padding: 13px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  color: var(--text);
 }
 
-.option:hover {
-  border-color: var(--gold);
-  background: #2a385c;
-}
+.option:hover { border-color: var(--gold); }
 
 .option.correct {
-  background: rgba(42, 157, 143, 0.2);
-  border-color: var(--success);
-  color: #4ade80;
+  background: var(--green) !important;
+  color: white !important;
 }
 
 .option.wrong {
-  background: rgba(230, 57, 70, 0.2);
-  border-color: var(--error);
-  color: #f87171;
+  background: var(--red) !important;
+  color: white !important;
 }
 
-.progress-bar-bg {
-  height: 8px;
-  background: #0d172e;
-  border-radius: 10px;
+.progress {
+  height: 11px;
+  background: #273c57;
+  border-radius: 20px;
   overflow: hidden;
-  margin: 12px 0 8px;
 }
 
-.progress-bar-fill {
+.progress div {
   height: 100%;
-  width: 0%;
+  width: 0;
   background: var(--gold);
-  transition: width 0.3s ease;
+  transition: width .3s;
 }
 
 .task {
   display: flex;
-  align-items: center;
-  padding: 12px;
-  background: var(--panel-accent);
-  border-radius: 8px;
-  margin-bottom: 8px;
-  border: 1px solid var(--line);
+  gap: 11px;
+  align-items: flex-start;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
   cursor: pointer;
 }
 
 .task input {
-  margin-right: 12px;
+  width: auto;
+  margin-top: 3px;
   accent-color: var(--gold);
-  width: 18px;
-  height: 18px;
 }
+
+.task span { line-height: 1.5; }
+
+a { color: var(--gold-light); }
 
 footer {
+  max-width: 1050px;
+  margin: auto;
   text-align: center;
-  color: var(--muted);
   padding: 20px;
+  color: var(--muted);
   font-size: 13px;
-  border-top: 1px solid var(--line);
-  margin-top: auto;
 }
 
-@media(max-width: 650px) {
+@media(max-width:600px) {
+  .auth-card { padding: 25px 18px; }
+  .brand { font-size: 25px; }
   .statrow { grid-template-columns: 1fr; }
-  .user-bar { flex-direction: column; gap: 10px; text-align: center; }
-  main { padding: 0 12px; }
+  header h1 { font-size: 22px; }
+  .user-area { width: 100%; }
+  .user-email { flex: 1; }
+  nav button { flex: 1 1 40%; }
+  .card { padding: 16px; }
 }
 </style>
 </head>
+
 <body>
 
-<header>
-  <div class="head-container">
-    <div class="brand">
-      <span class="brand-icon">🛡️</span>
-      <div>
-        <h1>Guarda <span>em Foco</span></h1>
-        <p class="subtitle">Preparatório para Guarda Municipal de Paulínia</p>
+<!-- LOGIN / CADASTRO -->
+<section id="authScreen">
+  <div class="auth-card">
+    <div class="crest" aria-label="Símbolo de proteção">🛡️</div>
+    <h1 class="brand">GUARDA EM FOCO</h1>
+    <p class="tagline">Preparação para a Guarda Municipal de Paulínia</p>
+
+    <div id="loginPanel">
+      <h2>Bem-vindo, futuro Guarda!</h2>
+      <p class="auth-description">
+        Entre na sua conta para acessar matérias, simulados e acompanhar sua evolução.
+      </p>
+
+      <form id="loginForm">
+        <div class="field">
+          <label for="loginEmail">E-mail</label>
+          <input id="loginEmail" type="email" autocomplete="email" required placeholder="Seu e-mail">
+        </div>
+        <div class="field">
+          <label for="loginPassword">Senha</label>
+          <input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Sua senha">
+        </div>
+        <button class="btn btn-gold btn-block" id="loginButton" type="submit">Entrar</button>
+      </form>
+
+      <div class="auth-links">
+        <button type="button" onclick="showAuthPanel('signup')">Criar conta</button>
+        <button type="button" onclick="showAuthPanel('reset')">Esqueci minha senha</button>
       </div>
     </div>
-  </div>
-</header>
 
-<main>
-  <!-- TELA DE LOGIN / CADASTRO -->
-  <section id="authScreen" class="auth-wrapper">
-    <div class="card">
-      <div class="auth-header">
-        <h2 id="authTitle">Acesse sua Conta</h2>
-        <p class="subtitle">Faça login para acompanhar suas metas e simul
+    <div id="signupPanel" class="hidden">
+      <h2>Criar sua conta</h2>
+      <p class="auth-description">Cadastre seu e-mail e crie uma senha para estudar.</p>
+      <form id="signupForm">
+        <div class="field">
+          <label for="signupName">Nome</label>
+          <input id="signupName" type="text" autocomplete="name" required placeholder="Seu nome">
+        </div>
+        <div class="field">
+          <label for="signupEmail">E-mail</label>
+          <input id="signupEmail" type="email" autocomplete="email" required placeholder="Seu e-mail">
+        </div>
+        <div class="field">
+          <label for="signupPassword">Senha (mínimo de 6 caracteres)</label>
+          <input id="signupPassword" type="password" autocomplete="new-password" minlength="6" required placeholder="Crie uma senha">
+        </div>
+        <button class="btn btn-gold btn-block" id="signupButton" type="submit">Criar conta</button>
+      </form>
+      <div class="auth-links">
+        <button type="button" onclick="showAuthPanel('login')">Voltar para entrar</button>
+      </div>
+    </div>
+
+    <div id="resetPanel" class="hidden">
+      <h2>Recuperar senha</h2>
+      <p class="auth-description">Informe seu e-mail para receber as instruções de recuperação.</p>
+      <form id="resetForm">
+        <div class="field">
+          <label for="resetEmail">E-mail cadastrado</label>
+          <input id="resetEmail" type="email" autocomplete="email" required placeholder="Seu e-mail">
+        </div>
+        <button class="btn btn-gold btn-block" type="submit">Enviar instruções</button>
+      </form>
+      <div class="auth-links">
+        <button type="button" onclick="showAuthPanel('login')">Voltar para entrar</button>
+      </div>
+    </div>
+
+    <div id="authMessage" class="message" role="status" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- APLICATIVO: SÓ APARECE APÓS LOGIN -->
+<div id="appScreen" class="hidden">
+  <header>
+    <div class="header-inner">
+      <div>
+        <h1>🛡️ Guarda em Foco</h1>
+        <p>Preparação para a Guarda Municipal de Paulínia</p>
+      </div>
+      <div class="user-area">
+        <span id="userEmail" class="user-email"></span>
+        <button class="btn btn-outline" id="logoutButton" type="button">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <nav>
+      <button class="active" onclick="showSection('inicio',this)">Início</button>
+      <button onclick="showSection('materias',this)">Matérias</button>
+      <button onclick="showSection('simulado',this)">Simulado</button>
+      <button onclick="showSection('plano',this)">Plano de estudos</button>
+    </nav>
+
+    <section id="inicio">
+      <div class="card">
+        <h2>Seu treinamento começa aqui</h2>
+        <p class="muted">Estude um pouco todos os dias e acompanhe sua evolução.</p>
+        <div class="statrow">
+          <div class="stat"><strong id="feitas">0</strong>Questões respondidas</div>
+          <div class="stat"><strong id="acertos">0</strong>Acertos</div>
+          <div class="stat"><strong id="percentual">0%</strong>Aproveitamento</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Progresso do plano</h3>
+        <div class="progress"><div id="barra"></div></div>
+        <p id="progressoTexto" class="muted">0 de 6 tarefas concluídas</p>
+        <button class="btn btn-gold" onclick="goToSection('simulado',2)">Começar simulado</button>
+      </div>
+
+      <div class="card">
+        <h3>Dica de estudo</h3>
+        <p>Leia a teoria, resolva questões e revise principalmente os erros. Confira sempre o edital vigente da sua seleção.</p>
+      </div>
+    </section>
+
+    <section id="materias" class="hidden">
+      <div class="card">
+        <h2>Matérias para estudar</h2>
+        <p class="muted">Selecione uma matéria para ver os tópicos principais.</p>
+        <button class="option" onclick="topic('Direito Constitucional','Artigos 1º a 4º: fundamentos da República, objetivos fundamentais e relações internacionais. Artigo 5º: direitos e garantias individuais. Artigo 6º: direitos sociais.')">Direito Constitucional</button>
+        <button class="option" onclick="topic('Direitos Humanos','Estude dignidade humana, igualdade, liberdade, Declaração Universal dos Direitos Humanos e proteção dos direitos fundamentais.')">Direitos Humanos</button>
+        <button class="option" onclick="topic('Legislação de trânsito','Revise sinalização, circulação, condutas, infrações, penalidades e regras do Código de Trânsito Brasileiro.')">Legislação de Trânsito</button>
+        <button class="option" onclick="topic('Legislação da Guarda Municipal','Estude o Estatuto Geral das Guardas Municipais (Lei 13.022/2014), competências, princípios mínimos e atuação preventiva.')">Legislação da Guarda</button>
+        <button class="option" onclick="topic('Língua Portuguesa','Interpretação de texto, ortografia, acentuação, pontuação, concordância, regência e crase.')">Língua Portuguesa</button>
+        <button class="option" onclick="topic('Matemática e raciocínio lógico','Porcentagem, razão e proporção, regra de três, operações, sequências e problemas lógicos.')">Matemática e Raciocínio Lógico</button>
+        <button class="option" onclick="topic('Conhecimentos gerais','Acompanhe fatos relevantes do Brasil e do mundo, cidadania, meio ambiente, história e geografia, conforme o edital.')">Conhecimentos Gerais</button>
+      </div>
+      <div class="card hidden" id="topico">
+        <h3 id="topicoTitulo"></h3>
+        <p id="topicoTexto"></p>
+      </div>
+    </section>
+
+    <section id="simulado" class="hidden">
+      <div class="card">
+        <h2>Simulado de treino</h2>
+        <p class="muted">Questões de treino, não oficiais.</p>
+        <p id="contador"></p>
+        <h3 id="pergunta"></h3>
+        <div id="alternativas"></div>
+        <p id="explicacao" aria-live="polite"></p>
+        <button class="btn btn-gold hidden" id="proxima" onclick="nextQuestion()">Próxima questão</button>
+        <button class="btn btn-gold hidden" id="reiniciar" onclick="restart()">Refazer simulado</button>
+      </div>
+    </section>
+
+    <section id="plano" class="hidden">
+      <div class="card">
+        <h2>Plano de estudos</h2>
+        <p class="muted">Marque as tarefas concluídas. O progresso será guardado nesta conta e neste navegador.</p>
+        <div id="tarefas"></div>
+      </div>
+    </section>
+
+    <div id="appMessage" class="message" role="status" aria-live="polite"></div>
+  </main>
+  <footer>Guarda em Foco • Material de apoio para estudos</footer>
+</div>
+
+<!-- Biblioteca oficial do Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/*
+  CONFIGURAÇÃO DO SUPABASE
+  No painel do Supabase, abra Project Settings / API.
+  Copie a URL do projeto e a chave pública publishable ou anon.
+  NÃO coloque a chave service_role neste arquivo.
+*/
+const SUPABASE_URL = "COLE_AQUI_A_URL_DO_PROJETO";
+const SUPABASE_PUBLIC_KEY = "COLE_AQUI_A_CHAVE_PUBLICA_PUBLISHABLE_OU_ANON";
+
+let supabaseClient = null;
+let currentUser = null;
+let isReady = false;
+let idx = 0;
+let respondeu = false;
+let stats = { feitas: 0, acertos: 0 };
+let tasks = [false,false,false,false,false,false];
+let progressReady = false;
+let saveQueue = Promise.resolve();
+
+const questions = [
+  {q:"Segundo o artigo 1º da Constituição Federal, qual é um fundamento da República?",a:["Censura prévia","Dignidade da pessoa humana","Voto indireto obrigatório","Supremacia de um poder sobre os demais"],c:1,e:"A dignidade da pessoa humana é um dos fundamentos da República, previsto no artigo 1º."},
+  {q:"Conforme a Constituição, todos são iguais perante a lei sem distinção de:",a:["Somente profissão","Somente escolaridade","Qualquer natureza, nos termos constitucionais","Somente renda"],c:2,e:"O caput do artigo 5º estabelece a igualdade perante a lei, sem distinção de qualquer natureza."},
+  {q:"Qual lei institui o Estatuto Geral das Guardas Municipais?",a:["Lei 8.069/1990","Lei 13.022/2014","Lei 9.099/1995","Lei 12.527/2011"],c:1,e:"A Lei Federal 13.022/2014 dispõe sobre o Estatuto Geral das Guardas Municipais."},
+  {q:"Qual alternativa apresenta um direito social previsto no artigo 6º da Constituição?",a:["Educação","Censura","Privilégio hereditário","Trabalho forçado"],c:0,e:"Educação é um dos direitos sociais expressamente previstos no artigo 6º."},
+  {q:"Em uma questão de interpretação de texto, a resposta deve se basear principalmente:",a:["Em opiniões pessoais","No que o texto permite concluir","Em qualquer informação externa","Na alternativa mais longa"],c:1,e:"A interpretação deve respeitar as informações e inferências justificadas pelo texto."},
+  {q:"Quanto é 20% de 150?",a:["15","20","30","35"],c:2,e:"20% de 150 = 0,20 × 150 = 30."},
+  {q:"A atuação preventiva da Guarda Municipal deve respeitar:",a:["A Constituição e as leis","Somente ordens informais","A vontade pessoal do agente","Regras diferentes para cada cidadão"],c:0,e:"A atuação dos agentes públicos deve respeitar a Constituição, a legislação e os limites de suas competências."},
+  {q:"Qual documento reúne regras gerais sobre circulação e conduta no trânsito brasileiro?",a:["Código Civil","Código de Trânsito Brasileiro","Código Comercial","Estatuto da Criança e do Adolescente"],c:1,e:"O Código de Trânsito Brasileiro é a Lei 9.503/1997."},
+  {q:"Se todos os agentes de um grupo fizeram treinamento e Carlos pertence a esse grupo, o que se pode concluir?",a:["Carlos não treinou","Carlos fez o treinamento","Ninguém treinou","Não há nenhuma conclusão possível"],c:1,e:"Se a regra se aplica a todos do grupo e Carlos faz parte dele, Carlos também fez o treinamento."},
+  {q:"A Declaração Universal dos Direitos Humanos foi proclamada em:",a:["1948","1964","1988","2001"],c:0,e:"A Declaração Universal dos Direitos Humanos foi adotada pela ONU em 10 de dezembro de 1948."}
+];
+
+const taskNames = [
+  "Estudar Língua Portuguesa",
+  "Revisar Constituição Federal",
+  "Estudar Lei 13.022/2014",
+  "Revisar Direitos Humanos",
+  "Resolver questões Vunesp",
+  "Revisar os erros do simulado"
+];
+
+function setMessage(id, text, type="info") {
+  const el = document.getElementById(id);
+  el.textContent = text || "";
+  el.className = "message" + (text ? " " + type : "");
+}
+
+function showAuthPanel(panel) {
+  ["loginPanel","signupPanel","resetPanel"].forEach(id =>
+    document.getElementById(id).classList.add("hidden")
+  );
+  const map = { login:"loginPanel", signup:"signupPanel", reset:"resetPanel" };
+  document.getElementById(map[panel]).classList.remove("hidden");
+  setMessage("authMessage", "");
+}
+
+function validateConfig() {
+  return SUPABASE_URL.startsWith("https://") &&
+    !SUPABASE_URL.includes("COLE_AQUI") &&
+    SUPABASE_PUBLIC_KEY.length > 20 &&
+    !SUPABASE_PUBLIC_KEY.includes("COLE_AQUI");
+}
+
+function localKey() {
+  return currentUser ? "gf_progress_" + currentUser.id : "";
+}
+
+function loadLocalProgress() {
+  if (!currentUser) return;
+  try {
+    const raw = localStorage.getItem(localKey());
+    const saved = raw ? JSON.parse(raw) : null;
+    stats = saved && saved.stats ? saved.stats : {feitas:0,acertos:0};
+    tasks = saved && Array.isArray(saved.tasks) && saved.tasks.length === taskNames.length
+      ? saved.tasks : [...taskNames].map(() => false);
+  } catch(e) {
+    stats = {feitas:0,acertos:0};
+    tasks = taskNames.map(() => false);
+  }
+  updateStats();
+  renderTasks();
+}
+
+function saveLocalProgress() {
+  if (!currentUser) return;
+  localStorage.setItem(localKey(), JSON.stringify({stats,tasks}));
+  updateStats();
+}
+
+async function loadCloudProgress() {
+  if (!currentUser || !supabaseClient) return;
+  progressReady = false;
+  try {
+    const {data,error} = await supabaseClient
+      .from("progresso_estudos")
+      .select("materia,topico,concluido,acertos,total_questoes")
+      .eq("usuario_id",currentUser.id);
+
+    if (error) throw error;
+
+    if (Array.isArray(data) && data.length) {
+      const cloudTasks = taskNames.map(() => false);
+      data.forEach(row => {
+        if (row.materia === "Plano de estudos") {
+          const i = taskNames.indexOf(row.topico);
+          if (i >= 0) cloudTasks[i] = !!row.concluido;
+        }
+      });
+      tasks = cloudTasks;
+      saveLocalProgress();
+      renderTasks();
+    }
+  } catch(e) {
+    console.warn("Não foi possível carregar o progresso da nuvem:", e.message);
+    setMessage("appMessage", "Não foi possível sincronizar o progresso com a nuvem. O progresso local continua disponível.", "info");
+  } finally {
+    progressReady = true;
+  }
+}
+
+function saveCloudProgress() {
+  if (!currentUser || !supabaseClient || !progressReady) return;
+  const userId = currentUser.id;
+  const rows = taskNames.map((name,i) => ({
+    usuario_id: userId,
+    materia: "Plano de estudos",
+    topico: name,
+    concluido: !!tasks[i],
+    acertos: stats.acertos,
+    total_questoes: stats.feitas,
+    atualizado_em: new Date().toISOString()
+  }));
+
+  // Serializa as gravações para evitar atualizações simultâneas.
+  saveQueue = saveQueue.then(async () => {
+    if (!currentUser || currentUser.id !== userId) return;
+    const {error} = await supabaseClient
+      .from("progresso_estudos")
+      .upsert(rows, {onConflict:"usuario_id,materia,topico"});
+    if (error) throw error;
+  }).catch(error => {
+    console.warn("Erro ao salvar progresso:", error.message);
+    setMessage("appMessage", "O progresso está salvo neste navegador, mas a sincronização com a conta falhou. Verifique a configuração da tabela no Supabase.", "info");
+  });
+}
+
+function saveProgress() {
+  saveLocalProgress();
+  saveCloudProgress();
+}
+
+function updateStats() {
+  document.getElementById("feitas").textContent = stats.feitas;
+  document.getElementById("acertos").textContent = stats.acertos;
+  document.getElementById("percentual").textContent =
+    (stats.feitas ? Math.round(stats.acertos / stats.feitas * 100) : 0) + "%";
+
+  const n = tasks.filter(Boolean).length;
+  document.getElementById("barra").style.width = (n / tasks.length * 100) + "%";
+  document.getElementById("progressoTexto").textContent =
+    n + " de " + tasks.length + " tarefas concluídas";
+}
+
+function showSection(id, btn) {
+  document.querySelectorAll("#appScreen main section").forEach(s => s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+  document.querySelectorAll("#appScreen nav button").forEach(b => b.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+  if (id === "simulado") renderQuestion();
+}
+
+function goToSection(id, index) {
+  const buttons = document.querySelectorAll("#appScreen nav button");
+  showSection(id, buttons[index]);
+}
+
+function topic(title, text) {
+  document.getElementById("topico").classList.remove("hidden");
+  document.getElementById("topicoTitulo").textContent = title;
+  document.getElementById("topicoTexto").textContent = text;
+}
+
+function renderQuestion() {
+  if (idx >= questions.length) {
+    document.getElementById("contador").textContent = "Simulado concluído!";
+    document.getElementById("pergunta").textContent = "Você terminou as 10 questões.";
+    document.getElementById("alternativas").innerHTML = "";
+    document.getElementById("explicacao").textContent =
+      "Confira seus acertos no painel inicial e revise os tópicos em que teve dificuldade.";
+    document.getElementById("proxima").classList.add("hidden");
+    document.getElementById("reiniciar").classList.remove("hidden");
+    return;
+  }
+
+  respondeu = false;
+  const q = questions[idx];
+  document.getElementById("contador").textContent = "Questão " + (idx + 1) + " de " + questions.length;
+  document.getElementById("pergunta").textContent = q.q;
+  document.getElementById("explicacao").textContent = "";
+  document.getElementById("proxima").classList.add("hidden");
+  document.getElementById("reiniciar").classList.add("hidden");
+
+  const div = document.getElementById("alternativas");
+  div.innerHTML = "";
+  q.a.forEach((answer,i) => {
+    const button = document.createElement("button");
+    button.className = "option";
+    button.textContent = String.fromCharCode(65+i) + ") " + answer;
+    button.onclick = () => answerQuestion(i,button);
+    div.appendChild(button);
+  });
+}
+
+function answerQuestion(choice, button) {
+  if (respondeu) return;
+  respondeu = true;
+  const q = questions[idx];
+  stats.feitas++;
+  const buttons = document.querySelectorAll("#alternativas button");
+  buttons[q.c].classList.add("correct");
+
+  if (choice === q.c) {
+    stats.acertos++;
+  } else {
+    button.classList.add("wrong");
+  }
+
+  document.getElementById("explicacao").textContent =
+    (choice === q.c ? "Correto! " : "Resposta correta: " + String.fromCharCode(65+q.c) + ". ") + q.e;
+
+  document.getElementById("proxima").classList.remove("hidden");
+  saveProgress();
+}
+
+function nextQuestion() {
+  idx++;
+  renderQuestion();
+}
+
+function restart() {
+  idx = 0;
+  renderQuestion();
+}
+
+function renderTasks() {
+  const el = document.getElementById("tarefas");
+  el.innerHTML = "";
+  taskNames.forEach((name,i) => {
+    const label = document.createElement("label");
+    label.className = "task";
+
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = !!tasks[i];
+    cb.onchange = () => {
+      tasks[i] = cb.checked;
+      saveProgress();
+    };
+
+    const text = document.createElement("span");
+    text.textContent = name;
+
+    label.appendChild(cb);
+    label.appendChild(text);
+    el.appendChild(label);
+  });
+  updateStats();
+}
+
+async function enterApp(user) {
+  currentUser = user;
+  document.getElementById("authScreen").classList.add("hidden");
+  document.getElementById("appScreen").classList.remove("hidden");
+  document.getElementById("userEmail").textContent = user.email || "";
+  setMessage("appMessage", "");
+  loadLocalProgress();
+  progressReady = true;
+  await loadCloudProgress();
+  showSection("inicio", document.querySelector("#appScreen nav button"));
+}
+
+function leaveApp() {
+  currentUser = null;
+  progressReady = false;
+  document.getElementById("appScreen").classList.add("hidden");
+  document.getElementById("authScreen").classList.remove("hidden");
+  setMessage("authMessage", "");
+  showAuthPanel("login");
+}
+
+document.getElementById("loginForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  if (!isReady) {
+    setMessage("authMessage", "Configure a URL e a chave pública do Supabase no início do código.", "error");
+    return;
+  }
+
+  const button = document.getElementById("loginButton");
+  button.disabled = true;
+  button.textContent = "Entrando...";
+
+  try {
+    const {data,error} = await supabaseClient.auth.signInWithPassword({
+      email: document.getElementById("loginEmail").value.trim(),
+      password: document.getElementById("loginPassword").value
+    });
+    if (error) throw error;
+    if (data.user) await enterApp(data.user);
+  } catch(error) {
+    setMessage("authMessage", error.message || "Não foi possível entrar. Confira seu e-mail e senha.", "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Entrar";
+  }
+});
+
+document.getElementById("signupForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  if (!isReady) {
+    setMessage("authMessage", "Configure a URL e a chave pública do Supabase no início do código.", "error");
+    return;
+  }
+
+  const button = document.getElementById("signupButton");
+  button.disabled = true;
+  button.textContent = "Criando conta...";
+
+  try {
+    const name = document.getElementById("signupName").value.trim();
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value;
+
+    const {data,error} = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {full_name:name},
+        emailRedirectTo: location.origin
+      }
+    });
+    if (error) throw error;
+
+    if (data.session && data.user) {
+      await enterApp(data.user);
+    } else {
+      setMessage("authMessage", "Cadastro iniciado! Confira seu e-mail e confirme a conta antes de entrar.", "success");
+      showAuthPanel("login");
+      document.getElementById("loginEmail").value = email;
+    }
+  } catch(error) {
+    setMessage("authMessage", error.message || "Não foi possível criar a conta.", "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Criar conta";
+  }
+});
+
+document.getElementById("resetForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  if (!isReady) {
+    setMessage("authMessage", "Configure a URL e a chave pública do Supabase no início do código.", "error");
+    return;
+  }
+
+  try {
+    const email = document.getElementById("resetEmail").value.trim();
+    const {error} = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: location.origin
+    });
+    if (error) throw error;
+    setMessage("authMessage", "Se o e-mail estiver cadastrado, você receberá as instruções para redefinir a senha.", "success");
+  } catch(error) {
+    setMessage("authMessage", error.message || "Não foi possível enviar o e-mail de recuperação.", "error");
+  }
+});
+
+document.getElementById("logoutButton").addEventListener("click", async () => {
+  if (!supabaseClient) return;
+  const {error} = await supabaseClient.auth.signOut();
+  if (error) {
+    setMessage("appMessage", "Não foi possível sair: " + error.message, "error");
+    return;
+  }
+  leaveApp();
+});
+
+async function initialize() {
+  if (!validateConfig()) {
+    setMessage("authMessage", "Falta configurar a URL do projeto e a chave pública do Supabase no código.", "info");
+    return;
+  }
+
+  if (!window.supabase || !window.supabase.createClient) {
+    setMessage("authMessage", "Não foi possível carregar o serviço de login. Verifique sua conexão e recarregue a página.", "error");
+    return;
+  }
+
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY);
+  isReady = true;
+
+  const {data,error} = await supabaseClient.auth.getSession();
+  if (error) {
+    setMessage("authMessage", "Não foi possível verificar sua sessão. Tente entrar novamente.", "error");
+    return;
+  }
+
+  if (data.session && data.session.user) {
+    await enterApp(data.session.user);
+  }
+
+  supabaseClient.auth.onAuthStateChange((event,session) => {
+    if (event === "SIGNED_OUT") {
+      leaveApp();
+    } else if (event === "PASSWORD_RECOVERY") {
+      setMessage("authMessage", "Use o fluxo de recuperação do Supabase para definir sua nova senha.", "info");
+    }
+  });
+}
+
+renderTasks();
+updateStats();
+initialize();
+</script>
+</body>
+</html>
