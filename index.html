@@ -1,823 +1,432 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Guarda em Foco | Estudos</title>
-
+<title>Guarda em Foco</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root {
-  --navy:#12233f;
-  --blue:#2458a6;
-  --gold:#f2b84b;
-  --bg:#f4f6fa;
-  --ink:#1d2939;
-  --muted:#667085;
-  --line:#e4e8ef;
-  --white:#fff;
-  --green:#16845b;
-}
+:root{--bg:#081426;--panel:#10213a;--panel2:#172b46;--gold:#e6bd62;--text:#f5f7fb;--muted:#b6c2d4;--line:#30435d}
 *{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.layout{min-height:100vh;display:grid;grid-template-columns:245px 1fr}
-.side{background:var(--navy);color:white;padding:26px 16px;display:flex;flex-direction:column;gap:24px}
-.brand{display:flex;gap:11px;align-items:center;padding:0 10px}
-.logo{width:42px;height:42px;border-radius:13px;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-size:22px;font-weight:900}
-.brand strong{display:block;font-size:17px}
-.brand small{color:#b9c6d8}
-.nav{display:grid;gap:7px}
-.nav button{border:0;background:transparent;color:#d7dfeb;text-align:left;padding:12px 14px;border-radius:10px;font-weight:600}
-.nav button.active,.nav button:hover{background:#263c5c;color:white}
-.nav span{display:inline-block;width:26px}
-.side-note{margin-top:auto;border:1px solid #3b4d67;border-radius:12px;padding:14px;color:#d7dfeb;font-size:12px;line-height:1.5}
-.main{min-width:0}
-.topbar{height:72px;background:white;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px}
-.topbar .tag{font-size:12px;color:var(--blue);background:#eaf1ff;padding:7px 10px;border-radius:99px;font-weight:700}
-.content{padding:28px;max-width:1250px;margin:auto}
-.eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--blue);font-weight:800}
-.heading{font-size:28px;margin:6px 0}
-.sub{color:var(--muted);margin:0 0 22px;line-height:1.55}
-.hero{background:linear-gradient(115deg,#142746,#2458a6);color:white;border-radius:18px;padding:26px;display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:20px}
-.hero h2{font-size:24px;margin:8px 0}
-.hero p{color:#e0e8f5;margin:0;max-width:560px;line-height:1.5}
-.hero .hero-icon{font-size:60px;opacity:.95}
-.btn{border:0;background:var(--blue);color:white;padding:11px 15px;border-radius:10px;font-weight:750}
-.btn.gold{background:var(--gold);color:#182943}
-.btn.light{background:#eaf1ff;color:var(--blue)}
-.btn.outline{background:white;color:var(--blue);border:1px solid #cbd7ec}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}
-.card,.stat{background:white;border:1px solid var(--line);border-radius:15px;padding:18px}
-.stat .symbol{font-size:22px}
-.stat .label{font-size:12px;color:var(--muted);margin-top:12px}
-.stat .value{font-size:27px;font-weight:850;margin:4px 0}
-.stat .hint{font-size:12px;color:var(--muted)}
-.grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
-.card h3{margin:0 0 14px;font-size:17px}
-.row{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.progress{height:8px;background:#edf0f5;border-radius:20px;overflow:hidden;margin:10px 0}
-.progress i{height:100%;display:block;background:var(--green);border-radius:20px}
-.subject{border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0}
-.subject .desc{font-size:12px;color:var(--muted);margin-top:5px}
-.pill{font-size:11px;font-weight:750;border-radius:99px;background:#edf4ff;color:#2458a6;padding:5px 8px;white-space:nowrap}
-.section{display:none}
-.section.active{display:block}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.tabs button{border:1px solid var(--line);background:white;border-radius:9px;padding:9px 12px;color:var(--ink)}
-.tabs button.active{background:var(--blue);color:white;border-color:var(--blue)}
-.question{font-size:18px;line-height:1.5;font-weight:750;margin:14px 0}
-.option{display:flex;gap:10px;padding:12px;border:1px solid var(--line);border-radius:11px;margin:9px 0;cursor:pointer;background:white}
-.option input{margin-top:4px}
-.option.selected{border-color:var(--blue);background:#f0f5ff}
-.feedback{padding:14px;border-radius:11px;margin:14px 0;line-height:1.5}
-.feedback.good{background:#e8f7ef;color:#155c3d}
-.feedback.bad{background:#fff0e9;color:#883a20}
-.muted{color:var(--muted)}
-.field{width:100%;padding:12px;border:1px solid #cfd7e3;border-radius:10px;background:white;margin:6px 0 12px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.checkline{display:flex;gap:10px;align-items:flex-start;padding:12px;border-bottom:1px solid var(--line)}
-.checkline input{margin-top:5px}
-.chatlog{height:300px;overflow:auto;background:#f8faff;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
-.bubble{max-width:90%;padding:11px 13px;border-radius:12px;margin:8px 0;line-height:1.5;font-size:14px;white-space:pre-wrap}
-.bubble.bot{background:white;border:1px solid var(--line)}
-.bubble.user{background:#eaf1ff;margin-left:auto}
-.footer{font-size:12px;color:var(--muted);margin-top:22px;line-height:1.5}
-.empty{padding:28px;text-align:center;color:var(--muted)}
-.mobile-menu{display:none}
-
-/* Tela inicial profissional */
-.home-intro{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:20px}
-.home-intro .heading{margin-top:7px}
-.home-status{display:inline-flex;align-items:center;gap:8px;background:#e8f7ef;color:#176443;border:1px solid #ccebd9;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap}
-.home-status:before{content:"";width:7px;height:7px;border-radius:50%;background:#16845b}
-.home-hero{position:relative;overflow:hidden;background:linear-gradient(115deg,#12233f 0%,#1b3b67 60%,#2458a6 100%);border-radius:20px;padding:30px;color:#fff;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;gap:22px;box-shadow:0 12px 28px #12233f1c}
-.home-hero:after{content:"";position:absolute;width:240px;height:240px;border:1px solid #ffffff20;border-radius:50%;right:45px;top:-105px;box-shadow:0 0 0 28px #ffffff08,0 0 0 58px #ffffff06;pointer-events:none}
-.home-hero-copy{position:relative;z-index:1;max-width:680px}
-.home-kicker{color:#ffd77f;font-size:11px;letter-spacing:.14em;font-weight:900;text-transform:uppercase}
-.home-hero h2{font-size:clamp(23px,3vw,31px);line-height:1.2;margin:10px 0}
-.home-hero p{color:#e0e8f5;line-height:1.65;max-width:610px;margin:0 0 20px}
-.home-hero-icon{position:relative;z-index:1;flex:0 0 108px;width:108px;height:108px;border-radius:28px;display:grid;place-items:center;background:#ffffff12;border:1px solid #ffffff25;font-size:54px}
-.home-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}
-.home-stat{min-width:0;background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px;box-shadow:0 3px 12px #12233f08}
-.home-stat-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.home-stat-icon{width:38px;height:38px;border-radius:12px;background:#edf3ff;display:grid;place-items:center;font-size:19px}
-.home-stat .label{font-size:11px;line-height:1.4;letter-spacing:.04em;font-weight:800;color:var(--muted);margin-top:15px}
-.home-stat .value{font-size:29px;line-height:1.2;font-weight:850;color:var(--navy);margin:6px 0}
-.home-stat .hint{font-size:12px;color:var(--muted);line-height:1.4}
-.home-columns{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:18px;align-items:start}
-.home-panel{min-width:0;background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 3px 12px #12233f08}
-.home-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
-.home-panel-head h3{margin:0}
-.home-panel-description{font-size:13px;line-height:1.5;color:var(--muted);margin:6px 0 16px}
-.home-shortcuts{display:grid;gap:10px;margin-top:16px}
-.home-shortcut{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;text-align:left;color:var(--ink);width:100%;transition:border-color .15s,background .15s}
-.home-shortcut:hover{border-color:#b8cbed;background:#f8faff}
-.home-shortcut-icon{width:40px;height:40px;flex:0 0 40px;border-radius:12px;background:#edf3ff;display:grid;place-items:center;font-size:19px}
-.home-shortcut-copy{flex:1;min-width:0}
-.home-shortcut-copy b{display:block;font-size:14px}
-.home-shortcut-copy small{display:block;color:var(--muted);font-size:12px;margin-top:4px;line-height:1.4}
-.home-shortcut-arrow{color:var(--blue);font-size:20px;font-weight:800}
-.home-tip{background:#fff8e8;border:1px solid #f4dfae;border-radius:13px;padding:15px;margin-top:16px;color:#604a1c;font-size:13px;line-height:1.6}
-.home-tip b{display:block;color:#62450a;margin-bottom:5px}
-
-@media(max-width:950px){
-  .home-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .home-columns{grid-template-columns:1fr}
-}
-@media(max-width:850px){
-  .layout{grid-template-columns:1fr}
-  .side{padding:13px;gap:12px}
-  .brand{padding:0 4px}
-  .nav{display:flex;overflow:auto;gap:5px}
-  .nav button{white-space:nowrap;padding:10px}
-  .nav span{width:auto;margin-right:5px}
-  .side-note{display:none}
-  .topbar{height:56px;padding:0 16px}
-  .content{padding:18px}
-  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .grid2{grid-template-columns:1fr}
-  .hero{padding:20px}
-  .hero .hero-icon{display:none}
-  .heading{font-size:24px}
-}
-@media(max-width:600px){
-  .home-intro{align-items:flex-start;flex-direction:column;gap:8px}
-  .home-hero{padding:22px}
-  .home-hero-icon{display:none}
-  .home-stat{padding:14px}
-  .home-stat .value{font-size:25px}
-  .home-panel{padding:16px}
-}
-@media(max-width:480px){
-  .stats{gap:8px}
-  .stat{padding:13px}
-  .stat .value{font-size:23px}
-  .content{padding:13px}
-  .two{grid-template-columns:1fr}
-  .topbar .tag{display:none}
-}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;line-height:1.5}
+header{background:#0c1b30;border-bottom:1px solid var(--line);padding:20px}
+.head,main{max-width:1000px;margin:auto}
+h1{color:var(--gold);margin:0}
+h2,h3{margin-top:0}
+h3{color:var(--gold)}
+p{margin:8px 0}
+.muted{color:var(--muted);font-size:14px}
+main{padding:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:15px}
+.hidden{display:none!important}
+button,input{font:inherit}
+button{cursor:pointer;border:0;border-radius:9px;padding:11px 14px;font-weight:bold}
+.primary{background:var(--gold);color:#152238}
+.secondary,.nav button{background:#233955;color:white;border:1px solid var(--line)}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.nav button.active{background:var(--gold);color:#152238}
+.field{width:100%;padding:12px;margin:6px 0 14px;border-radius:8px;border:1px solid #405673;background:#081426;color:white}
+.auth{max-width:480px;margin:30px auto;padding:15px}
+.auth-buttons{display:flex;gap:8px;flex-wrap:wrap}
+.message{background:#203650;padding:12px;border-radius:8px;margin-top:12px;white-space:pre-wrap}
+.statrow,.subjects{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat{background:var(--panel2);padding:14px;border-radius:10px}
+.stat strong{display:block;color:var(--gold);font-size:25px}
+.subjects{grid-template-columns:repeat(2,minmax(0,1fr))}
+.option{display:block;width:100%;text-align:left;margin:8px 0;background:#233955;color:white;border:1px solid #405673}
+.option.correct{background:#205c42}
+.option.wrong{background:#713441}
+.progress{height:10px;background:#30435d;border-radius:10px;overflow:hidden}
+.progress div{height:100%;width:0;background:var(--gold)}
+.task{display:block;padding:12px 0;border-bottom:1px solid var(--line)}
+.task input{margin-right:10px}
+footer{text-align:center;color:var(--muted);padding:25px}
+@media(max-width:600px){.statrow,.subjects{grid-template-columns:1fr}main{padding:12px}.card{padding:14px}}
 </style>
 </head>
-
 <body>
-<div class="layout">
-  <aside class="side">
-    <div class="brand">
-      <div class="logo">G</div>
-      <div><strong>Guarda em Foco</strong><small>Preparação inteligente</small></div>
-    </div>
+<header><div class="head">
+<h1>🛡️ Guarda em Foco</h1>
+<p class="muted">Preparação para a Guarda Municipal de Paulínia</p>
+</div></header>
 
-    <nav class="nav" id="nav">
-      <button class="active" data-page="inicio"><span>⌂</span>Início</button>
-      <button data-page="estudar"><span>▤</span>Estudar</button>
-      <button data-page="simulados"><span>☑</span>Simulados</button>
-      <button data-page="professor"><span>✦</span>Professor IA</button>
-      <button data-page="cronograma"><span>▦</span>Cronograma</button>
-      <button data-page="progresso"><span>↗</span>Meu progresso</button>
-    </nav>
-
-    <div class="side-note"><b>Foco no objetivo</b><br>Um passo por dia. Revise seus erros e acompanhe sua evolução até a prova.</div>
-  </aside>
-
-  <main class="main">
-    <header class="topbar">
-      <div><b id="topTitle">Painel de estudos</b></div>
-      <div class="tag">GUARDA MUNICIPAL • PAULÍNIA</div>
-    </header>
-
-    <div class="content">
-
-      <!-- TELA INICIAL -->
-      <section class="section active" id="page-inicio">
-        <div class="home-intro">
-          <div>
-            <div class="eyebrow">PAINEL DO CANDIDATO</div>
-            <h1 class="heading">Sua preparação em foco.</h1>
-            <p class="sub" style="margin-bottom:0">Organize seus estudos, pratique questões e acompanhe sua evolução para a Guarda Municipal de Paulínia.</p>
-          </div>
-          <div class="home-status">Rotina de estudos</div>
-        </div>
-
-        <div class="home-hero">
-          <div class="home-hero-copy">
-            <div class="home-kicker">MISSÃO DO DIA</div>
-            <h2>Disciplina hoje. Resultado amanhã.</h2>
-            <p>Avance um tópico por vez. Alterne teoria, questões e revisão dos erros para chegar mais preparado ao dia da prova.</p>
-            <button class="btn gold" onclick="go('cronograma')">Acessar meu cronograma <span aria-hidden="true">→</span></button>
-          </div>
-          <div class="home-hero-icon" aria-hidden="true">🎯</div>
-        </div>
-
-        <div class="home-stats">
-          <div class="home-stat">
-            <div class="home-stat-top"><span class="home-stat-icon">📚</span></div>
-            <div class="label">SESSÕES CONCLUÍDAS</div>
-            <div class="value" id="statSessions">0</div>
-            <div class="hint">Registros neste dispositivo</div>
-          </div>
-          <div class="home-stat">
-            <div class="home-stat-top"><span class="home-stat-icon">✍️</span></div>
-            <div class="label">QUESTÕES RESPONDIDAS</div>
-            <div class="value" id="statAnswered">0</div>
-            <div class="hint">Somatório dos simulados finalizados</div>
-          </div>
-          <div class="home-stat">
-            <div class="home-stat-top"><span class="home-stat-icon">🏆</span></div>
-            <div class="label">TAXA DE ACERTO</div>
-            <div class="value" id="statAccuracy">—</div>
-            <div class="hint">Percentual de respostas corretas</div>
-          </div>
-          <div class="home-stat">
-            <div class="home-stat-top"><span class="home-stat-icon">⏱️</span></div>
-            <div class="label">META DIÁRIA</div>
-            <div class="value" id="statGoal">2 h</div>
-            <div class="hint">Personalize no cronograma</div>
-          </div>
-        </div>
-
-        <div class="home-columns">
-          <div class="home-panel">
-            <div class="home-panel-head">
-              <h3>Matérias para estudar</h3>
-              <button class="btn light" onclick="go('estudar')">Ver todas →</button>
-            </div>
-            <p class="home-panel-description">Continue pelos conteúdos essenciais e mantenha uma rotina de revisão.</p>
-            <div id="homeSubjects"></div>
-          </div>
-
-          <div class="home-panel">
-            <h3>Atalhos de preparação</h3>
-            <p class="home-panel-description">Escolha sua próxima atividade e mantenha o ritmo.</p>
-            <div class="home-shortcuts">
-              <button class="home-shortcut" onclick="startQuiz()">
-                <span class="home-shortcut-icon">☑️</span>
-                <span class="home-shortcut-copy"><b>Fazer um simulado</b><small>Treine com questões comentadas</small></span>
-                <span class="home-shortcut-arrow">›</span>
-              </button>
-              <button class="home-shortcut" onclick="go('cronograma')">
-                <span class="home-shortcut-icon">🗓️</span>
-                <span class="home-shortcut-copy"><b>Ver cronograma</b><small>Planeje as tarefas da semana</small></span>
-                <span class="home-shortcut-arrow">›</span>
-              </button>
-              <button class="home-shortcut" onclick="go('progresso')">
-                <span class="home-shortcut-icon">📈</span>
-                <span class="home-shortcut-copy"><b>Acompanhar progresso</b><small>Confira acertos e pontos de revisão</small></span>
-                <span class="home-shortcut-arrow">›</span>
-              </button>
-              <button class="home-shortcut" onclick="go('professor')">
-                <span class="home-shortcut-icon">💬</span>
-                <span class="home-shortcut-copy"><b>Tirar uma dúvida</b><small>Use o professor de estudos demonstrativo</small></span>
-                <span class="home-shortcut-arrow">›</span>
-              </button>
-            </div>
-            <div class="home-tip"><b>💡 Estratégia de prova</b>Leia o comando com atenção. Termos como “sempre”, “nunca”, “somente” e “exceto” podem mudar completamente o sentido de uma alternativa.</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ÁREA DE ESTUDO -->
-      <section class="section" id="page-estudar">
-        <div class="eyebrow">Conteúdo organizado</div>
-        <h1 class="heading">Área de estudo</h1>
-        <p class="sub">Selecione uma matéria para ler o resumo inicial. Confira o edital vigente para confirmar todos os tópicos exigidos.</p>
-        <div class="tabs" id="subjectTabs"></div>
-        <div class="card" id="lessonContent"></div>
-      </section>
-
-      <!-- SIMULADOS -->
-      <section class="section" id="page-simulados">
-        <div class="eyebrow">Pratique e aprenda</div>
-        <h1 class="heading">Simulados</h1>
-        <p class="sub">Questões autorais de treino, com alternativas e comentários explicativos. Não são questões oficiais da Vunesp.</p>
-        <div class="card" id="quizCard">
-          <div class="row">
-            <div><h3>Treino de conhecimentos</h3><div class="muted">10 questões • múltipla escolha</div></div>
-            <span class="pill">Nível concurso</span>
-          </div>
-          <p>Responda com calma. Ao finalizar, veja seu resultado e as explicações.</p>
-          <button class="btn" onclick="startQuiz()">Iniciar simulado</button>
-        </div>
-      </section>
-
-      <!-- PROFESSOR -->
-      <section class="section" id="page-professor">
-        <div class="eyebrow">Tire suas dúvidas</div>
-        <h1 class="heading">Professor IA</h1>
-        <p class="sub">Digite uma dúvida e receba uma orientação de estudo. Esta primeira versão funciona com explicações locais de demonstração; ainda não está conectada a um serviço de IA online.</p>
-        <div class="card">
-          <div class="chatlog" id="chatlog">
-            <div class="bubble bot">Olá! Sou seu assistente de estudos. Posso ajudar com Constituição, direitos fundamentais, interpretação de texto e organização dos estudos. Qual assunto você quer entender?</div>
-          </div>
-          <form id="chatForm">
-            <textarea id="chatInput" class="field" rows="3" placeholder="Ex.: Explique o artigo 5º da Constituição em linguagem simples..." required></textarea>
-            <button class="btn" type="submit">Enviar pergunta</button>
-            <button class="btn outline" type="button" onclick="quickAsk('Explique os direitos e garantias fundamentais em linguagem simples.')">Exemplo de pergunta</button>
-          </form>
-        </div>
-      </section>
-
-      <!-- CRONOGRAMA -->
-      <section class="section" id="page-cronograma">
-        <div class="eyebrow">Organização semanal</div>
-        <h1 class="heading">Meu cronograma</h1>
-        <p class="sub">Ajuste sua meta e marque as tarefas conforme concluir. A sugestão abaixo é um ponto de partida, não substitui o edital.</p>
-        <div class="card">
-          <div class="two">
-            <label>Meta diária (horas)<input id="goalHours" class="field" type="number" min="0.5" max="12" step="0.5" value="2"></label>
-            <label>Data de início<input id="startDate" class="field" type="date"></label>
-          </div>
-          <button class="btn" onclick="saveGoal()">Salvar meta</button>
-          <h3 style="margin-top:22px">Plano semanal sugerido</h3>
-          <div id="scheduleList"></div>
-          <button class="btn outline" onclick="resetWeek()">Desmarcar tarefas da semana</button>
-        </div>
-      </section>
-
-      <!-- MEU PROGRESSO -->
-      <section class="section" id="page-progresso">
-        <div class="eyebrow">Acompanhe sua evolução</div>
-        <h1 class="heading">Meu progresso</h1>
-        <p class="sub">Seus resultados ficam salvos localmente neste navegador.</p>
-        <div class="stats">
-          <div class="stat"><div class="label">QUESTÕES RESPONDIDAS</div><div class="value" id="pAnswered">0</div></div>
-          <div class="stat"><div class="label">ACERTOS</div><div class="value" id="pCorrect">0</div></div>
-          <div class="stat"><div class="label">ERROS</div><div class="value" id="pWrong">0</div></div>
-          <div class="stat"><div class="label">APROVEITAMENTO</div><div class="value" id="pAccuracy">—</div></div>
-        </div>
-        <div class="card">
-          <h3>Desempenho por matéria</h3>
-          <div id="subjectProgress"></div>
-          <button class="btn outline" onclick="clearProgress()">Zerar meu histórico</button>
-        </div>
-      </section>
-
-      <p class="footer">Material de apoio independente, não oficial e sem vínculo com a Prefeitura de Paulínia ou a Vunesp. O conteúdo do concurso deve ser conferido no edital oficial mais recente. O progresso é salvo neste navegador; não há conta ou sincronização entre dispositivos nesta versão.</p>
-    </div>
-  </main>
+<section id="authScreen" class="auth">
+<div class="card">
+<h2 id="authTitle">Entrar na sua conta</h2>
+<p class="muted">Entre para acompanhar seu progresso de estudos.</p>
+<form id="authForm">
+<label for="email">E-mail</label>
+<input class="field" id="email" type="email" autocomplete="email" required placeholder="seuemail@exemplo.com">
+<label for="password">Senha</label>
+<input class="field" id="password" type="password" autocomplete="current-password" required minlength="6" placeholder="Sua senha">
+<div class="auth-buttons">
+<button class="primary" id="authSubmit" type="submit">Entrar</button>
+<button class="secondary" id="signupBtn" type="button">Criar conta</button>
+<button class="secondary" id="resetBtn" type="button">Esqueci a senha</button>
 </div>
+</form>
+<div id="authMessage" class="message hidden" role="status"></div>
+<p class="muted">Se o cadastro pedir confirmação, confira seu e-mail e a pasta de spam.</p>
+</div>
+</section>
+
+<div id="appScreen" class="hidden">
+<main>
+<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+<div><strong>Área do aluno</strong><div id="userEmail" class="muted"></div></div>
+<button class="secondary" id="logoutBtn">Sair</button>
+</div>
+<nav class="nav">
+<button class="active" data-page="inicio">Início</button>
+<button data-page="materias">Matérias</button>
+<button data-page="simulado">Simulado</button>
+<button data-page="plano">Plano de estudos</button>
+</nav>
+
+<section id="inicio" class="page">
+<div class="card">
+<h2>Seu treinamento começa aqui</h2>
+<p class="muted">Estude a teoria, pratique questões e revise os erros.</p>
+<div class="statrow">
+<div class="stat"><strong id="feitas">0</strong>Questões respondidas</div>
+<div class="stat"><strong id="acertos">0</strong>Acertos</div>
+<div class="stat"><strong id="percentual">0%</strong>Aproveitamento</div>
+</div>
+</div>
+<div class="card">
+<h3>Progresso do plano</h3>
+<div class="progress"><div id="barra"></div></div>
+<p id="progressoTexto" class="muted">0 de 6 tarefas concluídas</p>
+<button class="primary" data-goto="simulado">Começar simulado</button>
+</div>
+<div class="card"><h3>Dica de estudo</h3>
+<p>Leia a teoria, resolva questões e revise principalmente os erros. Confira o edital vigente para confirmar as matérias cobradas.</p></div>
+</section>
+
+<section id="materias" class="page hidden">
+<div class="card">
+<h2>Matérias para estudar</h2>
+<p class="muted">Selecione uma matéria para consultar os tópicos iniciais.</p>
+<div class="subjects">
+<button class="option" data-topic="Direito Constitucional" data-text="Artigos 1º a 4º: fundamentos e objetivos da República. Artigo 5º: direitos e garantias fundamentais. Artigo 6º: direitos sociais. Leia a Constituição e pratique questões.">Direito Constitucional</button>
+<button class="option" data-topic="Direitos Humanos" data-text="Estude dignidade humana, igualdade, liberdade, Declaração Universal dos Direitos Humanos e direitos fundamentais.">Direitos Humanos</button>
+<button class="option" data-topic="Legislação da Guarda Municipal" data-text="Estude a Lei 13.022/2014: princípios mínimos, competências e atuação preventiva das Guardas Municipais.">Legislação da Guarda</button>
+<button class="option" data-topic="Legislação de Trânsito" data-text="Revise sinalização, circulação, condutas, infrações e penalidades do Código de Trânsito Brasileiro, Lei 9.503/1997.">Legislação de Trânsito</button>
+<button class="option" data-topic="Língua Portuguesa" data-text="Interpretação de texto, ortografia, acentuação, pontuação, concordância, regência e crase. Pratique questões no estilo da banca.">Língua Portuguesa</button>
+<button class="option" data-topic="Matemática e Raciocínio Lógico" data-text="Estude porcentagem, razão e proporção, regra de três, operações, sequências e problemas lógicos.">Matemática e Raciocínio Lógico</button>
+<button class="option" data-topic="Conhecimentos Gerais" data-text="Revise atualidades, cidadania, meio ambiente, história e geografia conforme o edital.">Conhecimentos Gerais</button>
+</div>
+</div>
+<div id="topicCard" class="card hidden">
+<h3 id="topicTitle"></h3><p id="topicText"></p>
+</div>
+</section>
+
+<section id="simulado" class="page hidden">
+<div class="card">
+<h2>Simulado de treino</h2>
+<p class="muted">10 questões de prática; não são questões oficiais da prova.</p>
+<p id="contador"></p><h3 id="pergunta"></h3>
+<div id="alternativas"></div><p id="explicacao"></p>
+<button class="primary hidden" id="proxima">Próxima questão</button>
+<button class="primary hidden" id="reiniciar">Refazer simulado</button>
+</div>
+</section>
+
+<section id="plano" class="page hidden">
+<div class="card">
+<h2>Plano de estudos</h2>
+<p class="muted">Marque as tarefas concluídas. O progresso é salvo no navegador e sincronizado com sua conta quando possível.</p>
+<div id="tarefas"></div>
+<p id="syncStatus" class="muted">Aguardando sincronização.</p>
+</div>
+</section>
+</main>
+</div>
+<footer>Guarda em Foco • Material de apoio para estudos</footer>
 
 <script>
-const subjects = [
-  {
-    id:'const',
-    name:'Direito Constitucional',
-    icon:'⚖️',
-    desc:'Constituição Federal e direitos fundamentais',
-    lesson:'A Constituição Federal de 1988 é a norma fundamental do Brasil. O artigo 1º apresenta fundamentos da República, como soberania, cidadania, dignidade da pessoa humana, valores sociais do trabalho e da livre iniciativa e pluralismo político. O artigo 5º reúne direitos e garantias fundamentais, como igualdade perante a lei, liberdade, segurança e propriedade. Estude o texto constitucional e diferencie direitos, garantias e seus limites.'
-  },
-  {
-    id:'port',
-    name:'Língua Portuguesa',
-    icon:'📝',
-    desc:'Interpretação, gramática e pontuação',
-    lesson:'Na interpretação de texto, identifique o tema, a ideia central, a intenção do autor e as informações explícitas e implícitas. Não confunda uma inferência possível com algo que o texto realmente afirma. Em gramática, revise classes de palavras, concordância, regência, crase, pontuação, colocação pronominal e sentido das expressões, conforme o edital.'
-  },
-  {
-    id:'raci',
-    name:'Raciocínio Lógico',
-    icon:'🧠',
-    desc:'Proposições, porcentagem e problemas',
-    lesson:'Organize os dados antes de calcular. Em porcentagem, 20% de 150 corresponde a 0,20 × 150 = 30. Em lógica proposicional, uma proposição é uma frase declarativa que pode ser classificada como verdadeira ou falsa. Treine conectivos (e, ou, se... então), negação, equivalências e sequências, de acordo com o conteúdo previsto no edital.'
-  },
-  {
-    id:'adm',
-    name:'Direito Administrativo',
-    icon:'🏛️',
-    desc:'Princípios e administração pública',
-    lesson:'O artigo 37 da Constituição determina que a administração pública direta e indireta observe os princípios da legalidade, impessoalidade, moralidade, publicidade e eficiência (LIMPE). Em questões, diferencie a atuação vinculada da discricionária e estude atos administrativos, poderes administrativos e responsabilidade do Estado conforme o edital.'
-  },
-  {
-    id:'penal',
-    name:'Noções de Direito Penal',
-    icon:'📘',
-    desc:'Conceitos básicos e legislação indicada',
-    lesson:'O Direito Penal define infrações penais e consequências jurídicas. Revise os conceitos de crime, dolo e culpa, tentativa e consumação, ilicitude, culpabilidade e causas de exclusão, sem deixar de consultar a redação legal atualizada. Para concursos de Guarda Municipal, confira quais leis e artigos são expressamente exigidos no edital.'
-  },
-  {
-    id:'gm',
-    name:'Legislação da Guarda Municipal',
-    icon:'🛡️',
-    desc:'Competências e legislação específica',
-    lesson:'A Lei Federal nº 13.022/2014 institui normas gerais para as Guardas Municipais. Entre os temas de estudo estão princípios mínimos de atuação, competências, proteção municipal preventiva e respeito aos direitos fundamentais. Leia a lei atualizada e confira a legislação municipal e os tópicos específicos previstos no edital de Paulínia.'
+// CONFIGURAÇÃO DO SEU PROJETO SUPABASE
+const SUPABASE_URL = "https://ftfdbzgaulrpsyyiskdb.supabase.co";
+const SUPABASE_PUBLIC_KEY = "sb_publishable_I6_WJhSt0pWByv-VwtE0OA_ar75vO4l";
+const TABLE_NAME = "progresso_estudos";
+
+const $ = id => document.getElementById(id);
+let supabaseClient = null;
+let currentUser = null;
+let authMode = "login";
+
+function showMessage(text){
+  $("authMessage").textContent = text;
+  $("authMessage").classList.remove("hidden");
+}
+function clearMessage(){
+  $("authMessage").textContent = "";
+  $("authMessage").classList.add("hidden");
+}
+function initSupabase(){
+  if(!window.supabase || !window.supabase.createClient){
+    showMessage("Não foi possível carregar o Supabase. Verifique sua conexão e atualize a página.");
+    return false;
   }
-];
-
-const questions = [
-  {
-    s:'const',
-    q:'De acordo com o artigo 1º da Constituição Federal, qual alternativa apresenta um fundamento da República Federativa do Brasil?',
-    o:['A existência de religião oficial.','A dignidade da pessoa humana.','A censura prévia como regra.','A subordinação dos municípios aos estados em todos os assuntos.'],
-    a:1,
-    e:'A dignidade da pessoa humana está expressamente prevista no artigo 1º, inciso III, da Constituição Federal.'
-  },
-  {
-    s:'const',
-    q:'Segundo o artigo 5º da Constituição Federal, todos são iguais perante a lei, sem distinção de qualquer natureza. Essa previsão se relaciona diretamente ao princípio da:',
-    o:['Igualdade.','Hierarquia militar.','Anterioridade tributária.','Autonomia contratual absoluta.'],
-    a:0,
-    e:'O caput do artigo 5º consagra a igualdade perante a lei e protege direitos fundamentais.'
-  },
-  {
-    s:'adm',
-    q:'Quais são os princípios expressos no caput do artigo 37 da Constituição Federal?',
-    o:['Legalidade, impessoalidade, moralidade, publicidade e eficiência.','Liberdade, igualdade, fraternidade, segurança e propriedade.','Hierarquia, disciplina, sigilo, oportunidade e conveniência.','Soberania, cidadania, pluralismo, eficiência e defesa.'],
-    a:0,
-    e:'A sigla LIMPE ajuda a memorizar: legalidade, impessoalidade, moralidade, publicidade e eficiência.'
-  },
-  {
-    s:'gm',
-    q:'A Lei Federal nº 13.022/2014 é conhecida como:',
-    o:['Código de Processo Penal.','Estatuto Geral das Guardas Municipais.','Lei de Improbidade Administrativa.','Estatuto da Criança e do Adolescente.'],
-    a:1,
-    e:'A Lei nº 13.022/2014 estabelece normas gerais para as Guardas Municipais e é conhecida como Estatuto Geral das Guardas Municipais.'
-  },
-  {
-    s:'port',
-    q:'Em uma questão de interpretação, a resposta mais segura é aquela que:',
-    o:['Parece verdadeira com base na opinião pessoal.','Amplia a ideia do texto mesmo sem evidência.','É sustentada pelas informações do texto.','Usa sempre a alternativa mais longa.'],
-    a:2,
-    e:'A interpretação deve se apoiar no texto. Evite inserir opiniões ou informações que não estão justificadas pelo trecho.'
-  },
-  {
-    s:'raci',
-    q:'Quanto é 15% de 200?',
-    o:['15','20','30','35'],
-    a:2,
-    e:'10% de 200 é 20 e 5% é 10. Somando, 15% de 200 = 30.'
-  },
-  {
-    s:'const',
-    q:'Qual alternativa corresponde a um objetivo fundamental da República previsto no artigo 3º da Constituição?',
-    o:['Garantir o desenvolvimento nacional.','Eliminar a separação dos Poderes.','Restringir o acesso à Justiça.','Estabelecer censura geral à imprensa.'],
-    a:0,
-    e:'O artigo 3º inclui, entre os objetivos fundamentais, garantir o desenvolvimento nacional.'
-  },
-  {
-    s:'adm',
-    q:'O princípio da publicidade na Administração Pública está relacionado, em regra, à:',
-    o:['Proibição de divulgar qualquer ato administrativo.','Transparência dos atos públicos, respeitadas as hipóteses legais de sigilo.','Possibilidade de agir contra a lei por interesse público.','Obrigação de favorecer conhecidos em processos públicos.'],
-    a:1,
-    e:'A publicidade promove transparência e controle social, sem afastar sigilos legalmente protegidos.'
-  },
-  {
-    s:'penal',
-    q:'Em regra, o crime doloso ocorre quando o agente:',
-    o:['Age sem consciência e sem vontade em qualquer hipótese.','Quer o resultado ou assume o risco de produzi-lo.','Pratica sempre uma infração administrativa.','Não poderia prever o resultado em nenhuma situação.'],
-    a:1,
-    e:'Pelo Código Penal, há dolo quando o agente quis o resultado ou assumiu o risco de produzi-lo.'
-  },
-  {
-    s:'gm',
-    q:'No estudo da atuação da Guarda Municipal, a conduta mais compatível com o respeito aos direitos fundamentais é:',
-    o:['Agir sem observar a lei quando houver pressa.','Tratar pessoas de modo discriminatório.','Atuar dentro das competências legais e respeitar a dignidade das pessoas.','Impedir toda manifestação pública, sem exceção.'],
-    a:2,
-    e:'A atuação deve respeitar a Constituição, os direitos fundamentais e as competências legais da instituição.'
+  if(!supabaseClient){
+    supabaseClient = window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLIC_KEY);
   }
-];
-
-const week = [
-  ['Segunda-feira','Direito Constitucional','Leia os artigos indicados e faça 10 questões.'],
-  ['Terça-feira','Língua Portuguesa','Interpretação de texto e gramática.'],
-  ['Quarta-feira','Direito Administrativo','Revise princípios e resolva questões.'],
-  ['Quinta-feira','Legislação da Guarda Municipal','Leia a Lei 13.022/2014 e faça resumo.'],
-  ['Sexta-feira','Raciocínio Lógico','Treine problemas e revise os erros.'],
-  ['Sábado','Noções de Direito Penal','Estude os tópicos previstos no edital.'],
-  ['Domingo','Revisão geral','Refaça questões erradas e faça um simulado.']
-];
-
-const defaultState = {
-  sessions:0,
-  answered:0,
-  correct:0,
-  bySubject:{},
-  done:{},
-  goal:2,
-  startDate:new Date().toISOString().slice(0,10)
-};
-
-let state;
-try {
-  state = Object.assign(defaultState,JSON.parse(localStorage.getItem('guardaFocoState')||'{}'));
-} catch(e) {
-  state = {...defaultState};
+  return true;
 }
-
-function persist() {
-  localStorage.setItem('guardaFocoState',JSON.stringify(state));
-  renderStats();
+function setAuthMode(mode){
+  authMode = mode;
+  clearMessage();
+  $("authTitle").textContent = mode==="signup" ? "Criar sua conta" : mode==="reset" ? "Recuperar senha" : "Entrar na sua conta";
+  $("authSubmit").textContent = mode==="signup" ? "Criar conta" : mode==="reset" ? "Enviar link" : "Entrar";
+  $("password").classList.toggle("hidden",mode==="reset");
+  $("password").required = mode!=="reset";
+  $("signupBtn").classList.toggle("hidden",mode!=="login");
+  $("resetBtn").classList.toggle("hidden",mode!=="login");
 }
+$("signupBtn").addEventListener("click",()=>setAuthMode("signup"));
+$("resetBtn").addEventListener("click",()=>setAuthMode("reset"));
 
-function go(page) {
-  document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));
-  document.getElementById('topTitle').textContent = ({
-    inicio:'Painel de estudos',
-    estudar:'Área de estudo',
-    simulados:'Simulados',
-    professor:'Professor IA',
-    cronograma:'Meu cronograma',
-    progresso:'Meu progresso'
-  })[page];
-
-  if(page==='progresso') renderProgress();
-  if(page==='cronograma') renderSchedule();
-
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-document.getElementById('nav').addEventListener('click',e=>{
-  const b=e.target.closest('button[data-page]');
-  if(b) go(b.dataset.page);
+$("authForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  clearMessage();
+  if(!initSupabase()) return;
+  const email = $("email").value.trim();
+  const password = $("password").value;
+  $("authSubmit").disabled = true;
+  try{
+    let result;
+    if(authMode==="signup"){
+      result = await supabaseClient.auth.signUp({email,password});
+      if(result.error) throw result.error;
+      if(result.data.session){
+        await enterApp(result.data.session.user);
+      }else{
+        showMessage("Cadastro criado! Confira seu e-mail para confirmar a conta e depois entre no site.");
+      }
+    }else if(authMode==="reset"){
+      result = await supabaseClient.auth.resetPasswordForEmail(email,{
+        redirectTo: location.origin + location.pathname
+      });
+      if(result.error) throw result.error;
+      showMessage("Se o e-mail estiver cadastrado, você receberá um link para redefinir a senha. Confira o spam.");
+    }else{
+      result = await supabaseClient.auth.signInWithPassword({email,password});
+      if(result.error) throw result.error;
+      await enterApp(result.data.user);
+    }
+  }catch(err){
+    showMessage(err.message || "Não foi possível concluir. Confira os dados e tente novamente.");
+  }finally{
+    $("authSubmit").disabled = false;
+  }
 });
 
-function subjName(id) {
-  return subjects.find(s=>s.id===id)?.name||id;
+$("logoutBtn").addEventListener("click",async()=>{
+  if(supabaseClient) await supabaseClient.auth.signOut();
+  currentUser = null;
+  $("appScreen").classList.add("hidden");
+  $("authScreen").classList.remove("hidden");
+  setAuthMode("login");
+});
+
+async function enterApp(user){
+  currentUser = user;
+  $("userEmail").textContent = user.email || "Conta conectada";
+  $("authScreen").classList.add("hidden");
+  $("appScreen").classList.remove("hidden");
+  renderTasks();
+  updateStats();
+  showPage("inicio");
+  await loadCloudProgress();
 }
 
-function renderSubjects() {
-  document.getElementById('homeSubjects').innerHTML = subjects.slice(0,4).map(s=>`
-    <div class="subject">
-      <div class="row">
-        <b>${s.icon} ${s.name}</b>
-        <button class="btn light" onclick="openSubject('${s.id}')">Estudar</button>
-      </div>
-      <div class="desc">${s.desc}</div>
-    </div>
-  `).join('');
-
-  document.getElementById('subjectTabs').innerHTML = subjects.map((s,i)=>`
-    <button class="${i===0?'active':''}" onclick="openSubject('${s.id}',this)">${s.icon} ${s.name}</button>
-  `).join('');
-
-  openSubject('const');
-}
-
-function openSubject(id,button) {
-  document.querySelectorAll('#subjectTabs button').forEach(b=>b.classList.remove('active'));
-
-  if(button) {
-    button.classList.add('active');
-  } else {
-    const i=subjects.findIndex(s=>s.id===id);
-    document.querySelectorAll('#subjectTabs button')[i]?.classList.add('active');
-  }
-
-  const s=subjects.find(x=>x.id===id);
-
-  document.getElementById('lessonContent').innerHTML=`
-    <div class="eyebrow">${s.icon} MATÉRIA</div>
-    <h2>${s.name}</h2>
-    <p class="muted">${s.desc}</p>
-    <div style="line-height:1.8;margin:18px 0">${s.lesson}</div>
-    <div class="subject">
-      <b>Como estudar este tema</b>
-      <p class="muted">Leia o resumo, consulte a legislação atualizada quando aplicável e responda questões. Anote os erros para revisar depois.</p>
-    </div>
-    <button class="btn" onclick="markSession()">Marcar sessão como concluída</button>
-    <button class="btn outline" onclick="startQuiz('${id}')">Treinar esta matéria</button>
-  `;
-}
-
-function markSession() {
-  state.sessions++;
-  persist();
-  alert('Sessão registrada! Continue mantendo a constância.');
-}
-
-let quiz={list:[],idx:0,answers:[],finished:false};
-
-function startQuiz(subjectId) {
-  quiz.list=subjectId?questions.filter(q=>q.s===subjectId):[...questions];
-  quiz.idx=0;
-  quiz.answers=Array(quiz.list.length).fill(null);
-  quiz.finished=false;
-  go('simulados');
-  renderQuestion();
-}
-
-function renderQuestion() {
-  const card=document.getElementById('quizCard');
-
-  if(quiz.finished) {
-    let correct=0;
-    quiz.list.forEach((q,i)=>{
-      if(quiz.answers[i]===q.a) correct++;
-    });
-
-    state.answered+=quiz.list.length;
-    state.correct+=correct;
-
-    quiz.list.forEach((q,i)=>{
-      if(!state.bySubject[q.s]) state.bySubject[q.s]={answered:0,correct:0};
-      state.bySubject[q.s].answered++;
-      if(quiz.answers[i]===q.a) state.bySubject[q.s].correct++;
-    });
-
-    persist();
-
-    card.innerHTML=`
-      <div class="eyebrow">RESULTADO FINAL</div>
-      <h2>${correct} de ${quiz.list.length} acertos</h2>
-      <div class="progress"><i style="width:${correct/quiz.list.length*100}%"></i></div>
-      <p>${Math.round(correct/quiz.list.length*100)}% de aproveitamento. ${correct===quiz.list.length?'Excelente! Revise o conteúdo para fixar.':'Revise os comentários abaixo e tente novamente depois.'}</p>
-      ${quiz.list.map((q,i)=>`
-        <div class="subject">
-          <b>${i+1}. ${q.q}</b>
-          <p style="color:${quiz.answers[i]===q.a?'#16845b':'#b54708'};font-weight:700">${quiz.answers[i]===q.a?'✓ Correta':'✕ Incorreta'} — Resposta: ${'ABCD'[q.a]}</p>
-          <div class="muted">${q.e}</div>
-        </div>
-      `).join('')}
-      <button class="btn" onclick="startQuiz()">Fazer novo simulado</button>
-    `;
-    return;
-  }
-
-  const q=quiz.list[quiz.idx];
-
-  card.innerHTML=`
-    <div class="row">
-      <span class="pill">${subjName(q.s)}</span>
-      <span class="muted">Questão ${quiz.idx+1} de ${quiz.list.length}</span>
-    </div>
-    <div class="progress"><i style="width:${(quiz.idx+1)/quiz.list.length*100}%"></i></div>
-    <div class="question">${q.q}</div>
-    ${q.o.map((o,i)=>`
-      <label class="option ${quiz.answers[quiz.idx]===i?'selected':''}">
-        <input type="radio" name="answer" ${quiz.answers[quiz.idx]===i?'checked':''} value="${i}">
-        <span><b>${'ABCD'[i]}.</b> ${o}</span>
-      </label>
-    `).join('')}
-    <div class="row" style="margin-top:18px">
-      <button class="btn outline" onclick="prevQ()" ${quiz.idx===0?'disabled':''}>← Anterior</button>
-      <button class="btn" onclick="nextQ()">${quiz.idx===quiz.list.length-1?'Finalizar simulado':'Próxima →'}</button>
-    </div>
-  `;
-
-  card.querySelectorAll('input[name=answer]').forEach(el=>{
-    el.addEventListener('change',()=>{
-      quiz.answers[quiz.idx]=Number(el.value);
-      renderQuestion();
-    });
+// Sessão persistente: se já estiver conectado, abre a área do aluno.
+if(initSupabase()){
+  supabaseClient.auth.getSession().then(async({data})=>{
+    if(data.session) await enterApp(data.session.user);
+  });
+  supabaseClient.auth.onAuthStateChange((event,session)=>{
+    if(event==="PASSWORD_RECOVERY"){
+      setTimeout(async()=>{
+        const newPassword = prompt("Digite a nova senha (mínimo de 6 caracteres):");
+        if(!newPassword) return;
+        if(newPassword.length<6){
+          alert("A senha precisa ter pelo menos 6 caracteres.");
+          return;
+        }
+        const {error} = await supabaseClient.auth.updateUser({password:newPassword});
+        alert(error ? "Não foi possível alterar a senha: "+error.message : "Senha alterada com sucesso!");
+      },100);
+    }
   });
 }
 
-function nextQ() {
-  if(quiz.answers[quiz.idx]===null) {
-    alert('Selecione uma alternativa antes de continuar.');
+function showPage(id){
+  document.querySelectorAll(".page").forEach(s=>s.classList.add("hidden"));
+  $(id).classList.remove("hidden");
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+  if(id==="simulado") renderQuestion();
+}
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.goto)));
+document.querySelectorAll("[data-topic]").forEach(b=>b.addEventListener("click",()=>{
+  $("topicCard").classList.remove("hidden");
+  $("topicTitle").textContent = b.dataset.topic;
+  $("topicText").textContent = b.dataset.text;
+}));
+
+const questions = [
+{q:"Segundo o artigo 1º da Constituição Federal, qual é um fundamento da República?",a:["Censura prévia","Dignidade da pessoa humana","Voto indireto obrigatório","Supremacia de um poder sobre os demais"],c:1,e:"A dignidade da pessoa humana é um fundamento da República previsto no artigo 1º."},
+{q:"Conforme o artigo 5º da Constituição, todos são iguais perante a lei sem distinção de:",a:["Somente profissão","Somente escolaridade","Qualquer natureza, nos termos constitucionais","Somente renda"],c:2,e:"O artigo 5º estabelece a igualdade perante a lei, sem distinção de qualquer natureza."},
+{q:"Qual lei institui o Estatuto Geral das Guardas Municipais?",a:["Lei 8.069/1990","Lei 13.022/2014","Lei 9.099/1995","Lei 12.527/2011"],c:1,e:"A Lei Federal 13.022/2014 institui o Estatuto Geral das Guardas Municipais."},
+{q:"Qual alternativa apresenta um direito social previsto no artigo 6º da Constituição?",a:["Educação","Censura","Privilégio hereditário","Trabalho forçado"],c:0,e:"Educação é um dos direitos sociais previstos no artigo 6º."},
+{q:"Na interpretação de texto, a resposta deve se basear principalmente:",a:["Em opiniões pessoais","No que o texto permite concluir","Em qualquer informação externa","Na alternativa mais longa"],c:1,e:"A interpretação deve respeitar as informações e inferências justificadas pelo texto."},
+{q:"Quanto é 20% de 150?",a:["15","20","30","35"],c:2,e:"20% de 150 = 0,20 × 150 = 30."},
+{q:"A atuação da Guarda Municipal deve respeitar:",a:["A Constituição e as leis","Somente ordens informais","A vontade pessoal do agente","Regras diferentes para cada cidadão"],c:0,e:"A atuação dos agentes públicos deve respeitar a Constituição, as leis e suas competências."},
+{q:"Qual documento reúne regras gerais sobre circulação e conduta no trânsito brasileiro?",a:["Código Civil","Código de Trânsito Brasileiro","Código Comercial","Estatuto da Criança e do Adolescente"],c:1,e:"O Código de Trânsito Brasileiro é a Lei 9.503/1997."},
+{q:"Todos os agentes de um grupo fizeram treinamento. Carlos pertence ao grupo. O que se pode concluir?",a:["Carlos não treinou","Carlos fez o treinamento","Ninguém treinou","Não há conclusão possível"],c:1,e:"Se a regra vale para todos do grupo e Carlos pertence a ele, Carlos também fez o treinamento."},
+{q:"Em que ano foi proclamada a Declaração Universal dos Direitos Humanos?",a:["1948","1964","1988","2001"],c:0,e:"A Declaração Universal dos Direitos Humanos foi adotada pela ONU em 10 de dezembro de 1948."}
+];
+
+let idx = 0, answered = false;
+let stats = JSON.parse(localStorage.getItem("gf_stats") || '{"feitas":0,"acertos":0}');
+let tasks = JSON.parse(localStorage.getItem("gf_tasks") || "[false,false,false,false,false,false]");
+const taskNames = [
+"Estudar Língua Portuguesa",
+"Revisar Constituição Federal",
+"Estudar Lei 13.022/2014",
+"Revisar Direitos Humanos",
+"Resolver questões no estilo Vunesp",
+"Revisar os erros do simulado"
+];
+
+function saveLocal(){
+  localStorage.setItem("gf_stats",JSON.stringify(stats));
+  localStorage.setItem("gf_tasks",JSON.stringify(tasks));
+  updateStats();
+}
+function updateStats(){
+  $("feitas").textContent = stats.feitas;
+  $("acertos").textContent = stats.acertos;
+  $("percentual").textContent = (stats.feitas ? Math.round(stats.acertos/stats.feitas*100) : 0)+"%";
+  const n = tasks.filter(Boolean).length;
+  $("barra").style.width = (n/tasks.length*100)+"%";
+  $("progressoTexto").textContent = n+" de "+tasks.length+" tarefas concluídas";
+}
+function renderQuestion(){
+  if(idx>=questions.length){
+    $("contador").textContent = "Simulado concluído!";
+    $("pergunta").textContent = "Você terminou as 10 questões.";
+    $("alternativas").innerHTML = "";
+    $("explicacao").textContent = "Confira seu resultado no início e revise as matérias em que teve dificuldade.";
+    $("proxima").classList.add("hidden");
+    $("reiniciar").classList.remove("hidden");
     return;
   }
+  answered = false;
+  const q = questions[idx];
+  $("contador").textContent = "Questão "+(idx+1)+" de "+questions.length;
+  $("pergunta").textContent = q.q;
+  $("explicacao").textContent = "";
+  $("proxima").classList.add("hidden");
+  $("reiniciar").classList.add("hidden");
+  $("alternativas").innerHTML = "";
+  q.a.forEach((answer,i)=>{
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.textContent = String.fromCharCode(65+i)+") "+answer;
+    btn.addEventListener("click",()=>answerQuestion(i,btn));
+    $("alternativas").appendChild(btn);
+  });
+}
+function answerQuestion(choice,btn){
+  if(answered) return;
+  answered = true;
+  const q = questions[idx];
+  stats.feitas++;
+  const buttons = document.querySelectorAll("#alternativas button");
+  buttons[q.c].classList.add("correct");
+  if(choice===q.c) stats.acertos++;
+  else btn.classList.add("wrong");
+  $("explicacao").textContent = (choice===q.c ? "Correto! " : "Resposta correta: "+String.fromCharCode(65+q.c)+". ")+q.e;
+  $("proxima").classList.remove("hidden");
+  saveLocal();
+  saveCloudProgress();
+}
+$("proxima").addEventListener("click",()=>{idx++;renderQuestion()});
+$("reiniciar").addEventListener("click",()=>{idx=0;renderQuestion()});
 
-  if(quiz.idx===quiz.list.length-1) {
-    quiz.finished=true;
-    renderQuestion();
-  } else {
-    quiz.idx++;
-    renderQuestion();
+function renderTasks(){
+  $("tarefas").innerHTML = "";
+  taskNames.forEach((name,i)=>{
+    const label = document.createElement("label");
+    label.className = "task";
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = !!tasks[i];
+    cb.addEventListener("change",()=>{
+      tasks[i] = cb.checked;
+      saveLocal();
+      saveCloudProgress();
+    });
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(name));
+    $("tarefas").appendChild(label);
+  });
+}
+async function loadCloudProgress(){
+  if(!supabaseClient || !currentUser) return;
+  $("syncStatus").textContent = "Carregando seu progresso...";
+  try{
+    const {data,error} = await supabaseClient.from(TABLE_NAME)
+      .select("materia,topico,concluido,acertos,total_questoes")
+      .eq("usuario_id",currentUser.id);
+    if(error) throw error;
+    if(data){
+      data.forEach(row=>{
+        if(row.materia==="Plano de estudos"){
+          const i = taskNames.indexOf(row.topico);
+          if(i>=0) tasks[i] = !!row.concluido;
+          stats.acertos = Math.max(stats.acertos,Number(row.acertos)||0);
+          stats.feitas = Math.max(stats.feitas,Number(row.total_questoes)||0);
+        }
+      });
+      saveLocal();
+      renderTasks();
+    }
+    $("syncStatus").textContent = "Progresso carregado da sua conta.";
+  }catch(err){
+    $("syncStatus").textContent = "Não foi possível carregar da nuvem. O progresso local continua disponível. Confira a tabela e as políticas do Supabase.";
   }
 }
-
-function prevQ() {
-  if(quiz.idx>0) {
-    quiz.idx--;
-    renderQuestion();
-  }
+let cloudTimer;
+async function saveCloudProgress(){
+  if(!supabaseClient || !currentUser) return;
+  clearTimeout(cloudTimer);
+  cloudTimer = setTimeout(async()=>{
+    const rows = taskNames.map((topico,i)=>({
+      usuario_id:currentUser.id,
+      materia:"Plano de estudos",
+      topico,
+      concluido:!!tasks[i],
+      acertos:stats.acertos,
+      total_questoes:stats.feitas,
+      atualizado_em:new Date().toISOString()
+    }));
+    try{
+      const {error} = await supabaseClient.from(TABLE_NAME)
+        .upsert(rows,{onConflict:"usuario_id,materia,topico"});
+      if(error) throw error;
+      $("syncStatus").textContent = "Progresso sincronizado com sua conta.";
+    }catch(err){
+      $("syncStatus").textContent = "Falha ao sincronizar. Verifique se a tabela progresso_estudos e as políticas RLS foram criadas no Supabase.";
+    }
+  },400);
 }
-
-function renderStats() {
-  document.getElementById('statSessions').textContent=state.sessions||0;
-  document.getElementById('statAnswered').textContent=state.answered||0;
-  document.getElementById('statAccuracy').textContent=state.answered?Math.round(state.correct/state.answered*100)+'%':'—';
-  document.getElementById('statGoal').textContent=(state.goal||2)+' h';
-
-  if(document.getElementById('pAnswered')) {
-    document.getElementById('pAnswered').textContent=state.answered||0;
-    document.getElementById('pCorrect').textContent=state.correct||0;
-    document.getElementById('pWrong').textContent=(state.answered||0)-(state.correct||0);
-    document.getElementById('pAccuracy').textContent=state.answered?Math.round(state.correct/state.answered*100)+'%':'—';
-  }
-}
-
-function renderProgress() {
-  renderStats();
-
-  document.getElementById('subjectProgress').innerHTML=subjects.map(s=>{
-    let d=state.bySubject[s.id]||{answered:0,correct:0};
-    let pct=d.answered?Math.round(d.correct/d.answered*100):0;
-
-    return `
-      <div class="subject">
-        <div class="row"><b>${s.name}</b><span class="pill">${d.correct}/${d.answered} acertos</span></div>
-        <div class="progress"><i style="width:${pct}%"></i></div>
-        <div class="desc">${d.answered?pct+'% de aproveitamento':'Ainda sem respostas registradas'}</div>
-      </div>
-    `;
-  }).join('');
-}
-
-function renderSchedule() {
-  document.getElementById('goalHours').value=state.goal||2;
-  document.getElementById('startDate').value=state.startDate||new Date().toISOString().slice(0,10);
-
-  document.getElementById('scheduleList').innerHTML=week.map((d,i)=>`
-    <label class="checkline">
-      <input type="checkbox" ${state.done[i]?'checked':''} onchange="toggleTask(${i},this.checked)">
-      <div><b>${d[0]} — ${d[1]}</b><div class="muted">${d[2]}</div></div>
-    </label>
-  `).join('');
-}
-
-function toggleTask(i,v) {
-  state.done[i]=v;
-  if(v) state.sessions++;
-  persist();
-  renderSchedule();
-}
-
-function saveGoal() {
-  const v=Number(document.getElementById('goalHours').value);
-
-  if(!v||v<.5||v>12) {
-    alert('Escolha uma meta entre 0,5 e 12 horas.');
-    return;
-  }
-
-  state.goal=v;
-  state.startDate=document.getElementById('startDate').value||state.startDate;
-  persist();
-  alert('Meta salva neste navegador.');
-}
-
-function resetWeek() {
-  if(confirm('Deseja desmarcar as tarefas da semana?')) {
-    state.done={};
-    persist();
-    renderSchedule();
-  }
-}
-
-function clearProgress() {
-  if(confirm('Tem certeza de que deseja apagar o histórico deste navegador?')) {
-    state.sessions=0;
-    state.answered=0;
-    state.correct=0;
-    state.bySubject={};
-    state.done={};
-    persist();
-    renderProgress();
-  }
-}
-
-function quickAsk(text) {
-  document.getElementById('chatInput').value=text;
-  document.getElementById('chatForm').requestSubmit();
-}
-
-function answerLocal(q) {
-  const t=q.toLowerCase();
-
-  if(t.includes('artigo 5')||t.includes('direitos fundamentais'))
-    return 'O artigo 5º reúne direitos e garantias fundamentais. Em linguagem simples, protege direitos como vida, liberdade, igualdade, segurança e propriedade. Para estudar, leia o caput e os incisos previstos no edital, faça flashcards e pratique questões. Atenção: a aplicação de cada direito depende do texto constitucional e da interpretação jurídica.';
-
-  if(t.includes('artigo 1')||t.includes('fundamentos'))
-    return 'O artigo 1º apresenta os fundamentos da República: soberania, cidadania, dignidade da pessoa humana, valores sociais do trabalho e da livre iniciativa e pluralismo político. Uma forma de memorizar é criar cartões com cada fundamento e seu significado.';
-
-  if(t.includes('limpe')||t.includes('artigo 37')||t.includes('administrativo'))
-    return 'A sigla LIMPE reúne os princípios expressos no artigo 37: Legalidade, Impessoalidade, Moralidade, Publicidade e Eficiência. Exemplo: publicidade se relaciona à transparência dos atos públicos, respeitadas as hipóteses legais de sigilo.';
-
-  if(t.includes('vunesp')||t.includes('quest'))
-    return 'Estratégia para questões: leia primeiro o comando, identifique termos absolutos como “sempre” e “nunca”, elimine alternativas incompatíveis com a lei e volte ao enunciado para conferir. Após corrigir, registre por que a alternativa certa está correta e por que você errou.';
-
-  if(t.includes('cronograma')||t.includes('estudar'))
-    return 'Sugestão inicial: estude em blocos de 25 a 50 minutos, alterne teoria e questões e reserve parte do tempo para revisar erros. Use a aba Cronograma para organizar a semana e ajuste o plano conforme sua rotina e o edital.';
-
-  if(t.includes('guarda')||t.includes('13.022')||t.includes('lei'))
-    return 'Para legislação da Guarda Municipal, comece pela Lei Federal nº 13.022/2014 (Estatuto Geral das Guardas Municipais), estudando princípios e competências. Confira também as leis municipais e os tópicos indicados no edital vigente. Este assistente local oferece orientação geral e pode não cobrir todas as atualizações.';
-
-  if(t.includes('portugu')||t.includes('texto'))
-    return 'Em interpretação, diferencie informação explícita de inferência. A alternativa correta precisa ser sustentada pelo texto, não apenas parecer verdadeira. Observe conectivos, pronomes, pontuação e o sentido das palavras no contexto.';
-
-  return 'Para estudar esse assunto, divida-o em três etapas: (1) leia a definição e a legislação ou fonte indicada no edital; (2) escreva um resumo com suas próprias palavras; (3) resolva questões e anote os erros. Minha versão atual usa respostas de demonstração e não consulta a internet nem está conectada a uma IA externa. Se você disser o artigo ou tópico exato, posso ajudar a organizar o estudo.';
-}
-
-document.getElementById('chatForm').addEventListener('submit',e=>{
-  e.preventDefault();
-  const inp=document.getElementById('chatInput'),q=inp.value.trim();
-  if(!q)return;
-
-  const log=document.getElementById('chatlog');
-  log.innerHTML+='<div class="bubble user"></div><div class="bubble bot"></div>';
-  log.children[log.children.length-2].textContent=q;
-  log.children[log.children.length-1].textContent=answerLocal(q);
-  log.scrollTop=log.scrollHeight;
-  inp.value='';
-});
-
-renderSubjects();
-renderStats();
-renderSchedule();
+renderTasks();
+updateStats();
 </script>
 </body>
 </html>
