@@ -1,432 +1,406 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Guarda em Foco</title>
+<title>Guarda em Foco - Preparatório Múltiplo</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#081426;--panel:#10213a;--panel2:#172b46;--gold:#e6bd62;--text:#f5f7fb;--muted:#b6c2d4;--line:#30435d}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;line-height:1.5}
-header{background:#0c1b30;border-bottom:1px solid var(--line);padding:20px}
-.head,main{max-width:1000px;margin:auto}
-h1{color:var(--gold);margin:0}
-h2,h3{margin-top:0}
-h3{color:var(--gold)}
-p{margin:8px 0}
-.muted{color:var(--muted);font-size:14px}
-main{padding:18px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:15px}
-.hidden{display:none!important}
-button,input{font:inherit}
-button{cursor:pointer;border:0;border-radius:9px;padding:11px 14px;font-weight:bold}
-.primary{background:var(--gold);color:#152238}
-.secondary,.nav button{background:#233955;color:white;border:1px solid var(--line)}
-.nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
-.nav button.active{background:var(--gold);color:#152238}
-.field{width:100%;padding:12px;margin:6px 0 14px;border-radius:8px;border:1px solid #405673;background:#081426;color:white}
-.auth{max-width:480px;margin:30px auto;padding:15px}
-.auth-buttons{display:flex;gap:8px;flex-wrap:wrap}
-.message{background:#203650;padding:12px;border-radius:8px;margin-top:12px;white-space:pre-wrap}
-.statrow,.subjects{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.stat{background:var(--panel2);padding:14px;border-radius:10px}
-.stat strong{display:block;color:var(--gold);font-size:25px}
-.subjects{grid-template-columns:repeat(2,minmax(0,1fr))}
-.option{display:block;width:100%;text-align:left;margin:8px 0;background:#233955;color:white;border:1px solid #405673}
-.option.correct{background:#205c42}
-.option.wrong{background:#713441}
-.progress{height:10px;background:#30435d;border-radius:10px;overflow:hidden}
-.progress div{height:100%;width:0;background:var(--gold)}
-.task{display:block;padding:12px 0;border-bottom:1px solid var(--line)}
-.task input{margin-right:10px}
-footer{text-align:center;color:var(--muted);padding:25px}
-@media(max-width:600px){.statrow,.subjects{grid-template-columns:1fr}main{padding:12px}.card{padding:14px}}
+:root {
+  --bg: #0b132b;
+  --panel: #1c2541;
+  --panel-accent: #232f52;
+  --gold: #f4c430;
+  --gold-hover: #d4a318;
+  --text: #f0f4f8;
+  --muted: #8d99ae;
+  --line: #2e3a59;
+  --success: #2a9d8f;
+  --error: #e63946;
+  --radius: 12px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: rgba(12, 22, 45, 0.95);
+  border-bottom: 1px solid var(--line);
+  padding: 16px 20px;
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.head-container {
+  max-width: 1000px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  font-size: 28px;
+}
+
+h1 {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+h1 span {
+  color: var(--gold);
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0;
+}
+
+main {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 0 20px;
+  width: 100%;
+  flex: 1;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+.hidden { display: none !important; }
+
+button, input {
+  font-family: inherit;
+  font-size: 14px;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.primary {
+  background: var(--gold);
+  color: #0b132b;
+}
+
+.primary:hover {
+  background: var(--gold-hover);
+  transform: translateY(-1px);
+}
+
+.secondary {
+  background: var(--panel-accent);
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+.secondary:hover {
+  background: #2c3a61;
+  border-color: var(--muted);
+}
+
+.nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+  overflow-x: auto;
+}
+
+.nav button {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid transparent;
+  padding: 10px 16px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.nav button:hover {
+  color: var(--text);
+  background: var(--panel-accent);
+}
+
+.nav button.active {
+  background: var(--gold);
+  color: #0b132b;
+  font-weight: 700;
+}
+
+.field-group {
+  margin-bottom: 16px;
+}
+
+.field-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.field {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #0d172e;
+  color: white;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field:focus {
+  border-color: var(--gold);
+}
+
+/* Auth Area styling */
+.auth-wrapper {
+  max-width: 420px;
+  margin: 40px auto;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.auth-header h2 {
+  font-size: 22px;
+  margin: 0 0 8px;
+}
+
+.auth-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.auth-links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 14px;
+}
+
+.auth-links button {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.auth-links button:hover {
+  color: var(--gold);
+}
+
+.message {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-top: 16px;
+  font-size: 14px;
+  border: 1px solid transparent;
+}
+
+.message.info {
+  background: rgba(244, 196, 48, 0.1);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.message.error {
+  background: rgba(230, 57, 70, 0.1);
+  border-color: var(--error);
+  color: var(--error);
+}
+
+/* Dashboard Controls */
+.user-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: var(--panel-accent);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+}
+
+.statrow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.stat {
+  background: var(--panel-accent);
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  text-align: center;
+}
+
+.stat strong {
+  display: block;
+  color: var(--gold);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.stat span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.subjects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  background: var(--panel-accent);
+  color: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  line-height: 1.4;
+}
+
+.option:hover {
+  border-color: var(--gold);
+  background: #2a385c;
+}
+
+.option.correct {
+  background: rgba(42, 157, 143, 0.2);
+  border-color: var(--success);
+  color: #4ade80;
+}
+
+.option.wrong {
+  background: rgba(230, 57, 70, 0.2);
+  border-color: var(--error);
+  color: #f87171;
+}
+
+.progress-bar-bg {
+  height: 8px;
+  background: #0d172e;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 12px 0 8px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--gold);
+  transition: width 0.3s ease;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: var(--panel-accent);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid var(--line);
+  cursor: pointer;
+}
+
+.task input {
+  margin-right: 12px;
+  accent-color: var(--gold);
+  width: 18px;
+  height: 18px;
+}
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  padding: 20px;
+  font-size: 13px;
+  border-top: 1px solid var(--line);
+  margin-top: auto;
+}
+
+@media(max-width: 650px) {
+  .statrow { grid-template-columns: 1fr; }
+  .user-bar { flex-direction: column; gap: 10px; text-align: center; }
+  main { padding: 0 12px; }
+}
 </style>
 </head>
 <body>
-<header><div class="head">
-<h1>🛡️ Guarda em Foco</h1>
-<p class="muted">Preparação para a Guarda Municipal de Paulínia</p>
-</div></header>
 
-<section id="authScreen" class="auth">
-<div class="card">
-<h2 id="authTitle">Entrar na sua conta</h2>
-<p class="muted">Entre para acompanhar seu progresso de estudos.</p>
-<form id="authForm">
-<label for="email">E-mail</label>
-<input class="field" id="email" type="email" autocomplete="email" required placeholder="seuemail@exemplo.com">
-<label for="password">Senha</label>
-<input class="field" id="password" type="password" autocomplete="current-password" required minlength="6" placeholder="Sua senha">
-<div class="auth-buttons">
-<button class="primary" id="authSubmit" type="submit">Entrar</button>
-<button class="secondary" id="signupBtn" type="button">Criar conta</button>
-<button class="secondary" id="resetBtn" type="button">Esqueci a senha</button>
-</div>
-</form>
-<div id="authMessage" class="message hidden" role="status"></div>
-<p class="muted">Se o cadastro pedir confirmação, confira seu e-mail e a pasta de spam.</p>
-</div>
-</section>
+<header>
+  <div class="head-container">
+    <div class="brand">
+      <span class="brand-icon">🛡️</span>
+      <div>
+        <h1>Guarda <span>em Foco</span></h1>
+        <p class="subtitle">Preparatório para Guarda Municipal de Paulínia</p>
+      </div>
+    </div>
+  </div>
+</header>
 
-<div id="appScreen" class="hidden">
 <main>
-<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-<div><strong>Área do aluno</strong><div id="userEmail" class="muted"></div></div>
-<button class="secondary" id="logoutBtn">Sair</button>
-</div>
-<nav class="nav">
-<button class="active" data-page="inicio">Início</button>
-<button data-page="materias">Matérias</button>
-<button data-page="simulado">Simulado</button>
-<button data-page="plano">Plano de estudos</button>
-</nav>
-
-<section id="inicio" class="page">
-<div class="card">
-<h2>Seu treinamento começa aqui</h2>
-<p class="muted">Estude a teoria, pratique questões e revise os erros.</p>
-<div class="statrow">
-<div class="stat"><strong id="feitas">0</strong>Questões respondidas</div>
-<div class="stat"><strong id="acertos">0</strong>Acertos</div>
-<div class="stat"><strong id="percentual">0%</strong>Aproveitamento</div>
-</div>
-</div>
-<div class="card">
-<h3>Progresso do plano</h3>
-<div class="progress"><div id="barra"></div></div>
-<p id="progressoTexto" class="muted">0 de 6 tarefas concluídas</p>
-<button class="primary" data-goto="simulado">Começar simulado</button>
-</div>
-<div class="card"><h3>Dica de estudo</h3>
-<p>Leia a teoria, resolva questões e revise principalmente os erros. Confira o edital vigente para confirmar as matérias cobradas.</p></div>
-</section>
-
-<section id="materias" class="page hidden">
-<div class="card">
-<h2>Matérias para estudar</h2>
-<p class="muted">Selecione uma matéria para consultar os tópicos iniciais.</p>
-<div class="subjects">
-<button class="option" data-topic="Direito Constitucional" data-text="Artigos 1º a 4º: fundamentos e objetivos da República. Artigo 5º: direitos e garantias fundamentais. Artigo 6º: direitos sociais. Leia a Constituição e pratique questões.">Direito Constitucional</button>
-<button class="option" data-topic="Direitos Humanos" data-text="Estude dignidade humana, igualdade, liberdade, Declaração Universal dos Direitos Humanos e direitos fundamentais.">Direitos Humanos</button>
-<button class="option" data-topic="Legislação da Guarda Municipal" data-text="Estude a Lei 13.022/2014: princípios mínimos, competências e atuação preventiva das Guardas Municipais.">Legislação da Guarda</button>
-<button class="option" data-topic="Legislação de Trânsito" data-text="Revise sinalização, circulação, condutas, infrações e penalidades do Código de Trânsito Brasileiro, Lei 9.503/1997.">Legislação de Trânsito</button>
-<button class="option" data-topic="Língua Portuguesa" data-text="Interpretação de texto, ortografia, acentuação, pontuação, concordância, regência e crase. Pratique questões no estilo da banca.">Língua Portuguesa</button>
-<button class="option" data-topic="Matemática e Raciocínio Lógico" data-text="Estude porcentagem, razão e proporção, regra de três, operações, sequências e problemas lógicos.">Matemática e Raciocínio Lógico</button>
-<button class="option" data-topic="Conhecimentos Gerais" data-text="Revise atualidades, cidadania, meio ambiente, história e geografia conforme o edital.">Conhecimentos Gerais</button>
-</div>
-</div>
-<div id="topicCard" class="card hidden">
-<h3 id="topicTitle"></h3><p id="topicText"></p>
-</div>
-</section>
-
-<section id="simulado" class="page hidden">
-<div class="card">
-<h2>Simulado de treino</h2>
-<p class="muted">10 questões de prática; não são questões oficiais da prova.</p>
-<p id="contador"></p><h3 id="pergunta"></h3>
-<div id="alternativas"></div><p id="explicacao"></p>
-<button class="primary hidden" id="proxima">Próxima questão</button>
-<button class="primary hidden" id="reiniciar">Refazer simulado</button>
-</div>
-</section>
-
-<section id="plano" class="page hidden">
-<div class="card">
-<h2>Plano de estudos</h2>
-<p class="muted">Marque as tarefas concluídas. O progresso é salvo no navegador e sincronizado com sua conta quando possível.</p>
-<div id="tarefas"></div>
-<p id="syncStatus" class="muted">Aguardando sincronização.</p>
-</div>
-</section>
-</main>
-</div>
-<footer>Guarda em Foco • Material de apoio para estudos</footer>
-
-<script>
-// CONFIGURAÇÃO DO SEU PROJETO SUPABASE
-const SUPABASE_URL = "https://ftfdbzgaulrpsyyiskdb.supabase.co";
-const SUPABASE_PUBLIC_KEY = "sb_publishable_I6_WJhSt0pWByv-VwtE0OA_ar75vO4l";
-const TABLE_NAME = "progresso_estudos";
-
-const $ = id => document.getElementById(id);
-let supabaseClient = null;
-let currentUser = null;
-let authMode = "login";
-
-function showMessage(text){
-  $("authMessage").textContent = text;
-  $("authMessage").classList.remove("hidden");
-}
-function clearMessage(){
-  $("authMessage").textContent = "";
-  $("authMessage").classList.add("hidden");
-}
-function initSupabase(){
-  if(!window.supabase || !window.supabase.createClient){
-    showMessage("Não foi possível carregar o Supabase. Verifique sua conexão e atualize a página.");
-    return false;
-  }
-  if(!supabaseClient){
-    supabaseClient = window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLIC_KEY);
-  }
-  return true;
-}
-function setAuthMode(mode){
-  authMode = mode;
-  clearMessage();
-  $("authTitle").textContent = mode==="signup" ? "Criar sua conta" : mode==="reset" ? "Recuperar senha" : "Entrar na sua conta";
-  $("authSubmit").textContent = mode==="signup" ? "Criar conta" : mode==="reset" ? "Enviar link" : "Entrar";
-  $("password").classList.toggle("hidden",mode==="reset");
-  $("password").required = mode!=="reset";
-  $("signupBtn").classList.toggle("hidden",mode!=="login");
-  $("resetBtn").classList.toggle("hidden",mode!=="login");
-}
-$("signupBtn").addEventListener("click",()=>setAuthMode("signup"));
-$("resetBtn").addEventListener("click",()=>setAuthMode("reset"));
-
-$("authForm").addEventListener("submit",async e=>{
-  e.preventDefault();
-  clearMessage();
-  if(!initSupabase()) return;
-  const email = $("email").value.trim();
-  const password = $("password").value;
-  $("authSubmit").disabled = true;
-  try{
-    let result;
-    if(authMode==="signup"){
-      result = await supabaseClient.auth.signUp({email,password});
-      if(result.error) throw result.error;
-      if(result.data.session){
-        await enterApp(result.data.session.user);
-      }else{
-        showMessage("Cadastro criado! Confira seu e-mail para confirmar a conta e depois entre no site.");
-      }
-    }else if(authMode==="reset"){
-      result = await supabaseClient.auth.resetPasswordForEmail(email,{
-        redirectTo: location.origin + location.pathname
-      });
-      if(result.error) throw result.error;
-      showMessage("Se o e-mail estiver cadastrado, você receberá um link para redefinir a senha. Confira o spam.");
-    }else{
-      result = await supabaseClient.auth.signInWithPassword({email,password});
-      if(result.error) throw result.error;
-      await enterApp(result.data.user);
-    }
-  }catch(err){
-    showMessage(err.message || "Não foi possível concluir. Confira os dados e tente novamente.");
-  }finally{
-    $("authSubmit").disabled = false;
-  }
-});
-
-$("logoutBtn").addEventListener("click",async()=>{
-  if(supabaseClient) await supabaseClient.auth.signOut();
-  currentUser = null;
-  $("appScreen").classList.add("hidden");
-  $("authScreen").classList.remove("hidden");
-  setAuthMode("login");
-});
-
-async function enterApp(user){
-  currentUser = user;
-  $("userEmail").textContent = user.email || "Conta conectada";
-  $("authScreen").classList.add("hidden");
-  $("appScreen").classList.remove("hidden");
-  renderTasks();
-  updateStats();
-  showPage("inicio");
-  await loadCloudProgress();
-}
-
-// Sessão persistente: se já estiver conectado, abre a área do aluno.
-if(initSupabase()){
-  supabaseClient.auth.getSession().then(async({data})=>{
-    if(data.session) await enterApp(data.session.user);
-  });
-  supabaseClient.auth.onAuthStateChange((event,session)=>{
-    if(event==="PASSWORD_RECOVERY"){
-      setTimeout(async()=>{
-        const newPassword = prompt("Digite a nova senha (mínimo de 6 caracteres):");
-        if(!newPassword) return;
-        if(newPassword.length<6){
-          alert("A senha precisa ter pelo menos 6 caracteres.");
-          return;
-        }
-        const {error} = await supabaseClient.auth.updateUser({password:newPassword});
-        alert(error ? "Não foi possível alterar a senha: "+error.message : "Senha alterada com sucesso!");
-      },100);
-    }
-  });
-}
-
-function showPage(id){
-  document.querySelectorAll(".page").forEach(s=>s.classList.add("hidden"));
-  $(id).classList.remove("hidden");
-  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
-  if(id==="simulado") renderQuestion();
-}
-document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
-document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.goto)));
-document.querySelectorAll("[data-topic]").forEach(b=>b.addEventListener("click",()=>{
-  $("topicCard").classList.remove("hidden");
-  $("topicTitle").textContent = b.dataset.topic;
-  $("topicText").textContent = b.dataset.text;
-}));
-
-const questions = [
-{q:"Segundo o artigo 1º da Constituição Federal, qual é um fundamento da República?",a:["Censura prévia","Dignidade da pessoa humana","Voto indireto obrigatório","Supremacia de um poder sobre os demais"],c:1,e:"A dignidade da pessoa humana é um fundamento da República previsto no artigo 1º."},
-{q:"Conforme o artigo 5º da Constituição, todos são iguais perante a lei sem distinção de:",a:["Somente profissão","Somente escolaridade","Qualquer natureza, nos termos constitucionais","Somente renda"],c:2,e:"O artigo 5º estabelece a igualdade perante a lei, sem distinção de qualquer natureza."},
-{q:"Qual lei institui o Estatuto Geral das Guardas Municipais?",a:["Lei 8.069/1990","Lei 13.022/2014","Lei 9.099/1995","Lei 12.527/2011"],c:1,e:"A Lei Federal 13.022/2014 institui o Estatuto Geral das Guardas Municipais."},
-{q:"Qual alternativa apresenta um direito social previsto no artigo 6º da Constituição?",a:["Educação","Censura","Privilégio hereditário","Trabalho forçado"],c:0,e:"Educação é um dos direitos sociais previstos no artigo 6º."},
-{q:"Na interpretação de texto, a resposta deve se basear principalmente:",a:["Em opiniões pessoais","No que o texto permite concluir","Em qualquer informação externa","Na alternativa mais longa"],c:1,e:"A interpretação deve respeitar as informações e inferências justificadas pelo texto."},
-{q:"Quanto é 20% de 150?",a:["15","20","30","35"],c:2,e:"20% de 150 = 0,20 × 150 = 30."},
-{q:"A atuação da Guarda Municipal deve respeitar:",a:["A Constituição e as leis","Somente ordens informais","A vontade pessoal do agente","Regras diferentes para cada cidadão"],c:0,e:"A atuação dos agentes públicos deve respeitar a Constituição, as leis e suas competências."},
-{q:"Qual documento reúne regras gerais sobre circulação e conduta no trânsito brasileiro?",a:["Código Civil","Código de Trânsito Brasileiro","Código Comercial","Estatuto da Criança e do Adolescente"],c:1,e:"O Código de Trânsito Brasileiro é a Lei 9.503/1997."},
-{q:"Todos os agentes de um grupo fizeram treinamento. Carlos pertence ao grupo. O que se pode concluir?",a:["Carlos não treinou","Carlos fez o treinamento","Ninguém treinou","Não há conclusão possível"],c:1,e:"Se a regra vale para todos do grupo e Carlos pertence a ele, Carlos também fez o treinamento."},
-{q:"Em que ano foi proclamada a Declaração Universal dos Direitos Humanos?",a:["1948","1964","1988","2001"],c:0,e:"A Declaração Universal dos Direitos Humanos foi adotada pela ONU em 10 de dezembro de 1948."}
-];
-
-let idx = 0, answered = false;
-let stats = JSON.parse(localStorage.getItem("gf_stats") || '{"feitas":0,"acertos":0}');
-let tasks = JSON.parse(localStorage.getItem("gf_tasks") || "[false,false,false,false,false,false]");
-const taskNames = [
-"Estudar Língua Portuguesa",
-"Revisar Constituição Federal",
-"Estudar Lei 13.022/2014",
-"Revisar Direitos Humanos",
-"Resolver questões no estilo Vunesp",
-"Revisar os erros do simulado"
-];
-
-function saveLocal(){
-  localStorage.setItem("gf_stats",JSON.stringify(stats));
-  localStorage.setItem("gf_tasks",JSON.stringify(tasks));
-  updateStats();
-}
-function updateStats(){
-  $("feitas").textContent = stats.feitas;
-  $("acertos").textContent = stats.acertos;
-  $("percentual").textContent = (stats.feitas ? Math.round(stats.acertos/stats.feitas*100) : 0)+"%";
-  const n = tasks.filter(Boolean).length;
-  $("barra").style.width = (n/tasks.length*100)+"%";
-  $("progressoTexto").textContent = n+" de "+tasks.length+" tarefas concluídas";
-}
-function renderQuestion(){
-  if(idx>=questions.length){
-    $("contador").textContent = "Simulado concluído!";
-    $("pergunta").textContent = "Você terminou as 10 questões.";
-    $("alternativas").innerHTML = "";
-    $("explicacao").textContent = "Confira seu resultado no início e revise as matérias em que teve dificuldade.";
-    $("proxima").classList.add("hidden");
-    $("reiniciar").classList.remove("hidden");
-    return;
-  }
-  answered = false;
-  const q = questions[idx];
-  $("contador").textContent = "Questão "+(idx+1)+" de "+questions.length;
-  $("pergunta").textContent = q.q;
-  $("explicacao").textContent = "";
-  $("proxima").classList.add("hidden");
-  $("reiniciar").classList.add("hidden");
-  $("alternativas").innerHTML = "";
-  q.a.forEach((answer,i)=>{
-    const btn = document.createElement("button");
-    btn.className = "option";
-    btn.textContent = String.fromCharCode(65+i)+") "+answer;
-    btn.addEventListener("click",()=>answerQuestion(i,btn));
-    $("alternativas").appendChild(btn);
-  });
-}
-function answerQuestion(choice,btn){
-  if(answered) return;
-  answered = true;
-  const q = questions[idx];
-  stats.feitas++;
-  const buttons = document.querySelectorAll("#alternativas button");
-  buttons[q.c].classList.add("correct");
-  if(choice===q.c) stats.acertos++;
-  else btn.classList.add("wrong");
-  $("explicacao").textContent = (choice===q.c ? "Correto! " : "Resposta correta: "+String.fromCharCode(65+q.c)+". ")+q.e;
-  $("proxima").classList.remove("hidden");
-  saveLocal();
-  saveCloudProgress();
-}
-$("proxima").addEventListener("click",()=>{idx++;renderQuestion()});
-$("reiniciar").addEventListener("click",()=>{idx=0;renderQuestion()});
-
-function renderTasks(){
-  $("tarefas").innerHTML = "";
-  taskNames.forEach((name,i)=>{
-    const label = document.createElement("label");
-    label.className = "task";
-    const cb = document.createElement("input");
-    cb.type = "checkbox";
-    cb.checked = !!tasks[i];
-    cb.addEventListener("change",()=>{
-      tasks[i] = cb.checked;
-      saveLocal();
-      saveCloudProgress();
-    });
-    label.appendChild(cb);
-    label.appendChild(document.createTextNode(name));
-    $("tarefas").appendChild(label);
-  });
-}
-async function loadCloudProgress(){
-  if(!supabaseClient || !currentUser) return;
-  $("syncStatus").textContent = "Carregando seu progresso...";
-  try{
-    const {data,error} = await supabaseClient.from(TABLE_NAME)
-      .select("materia,topico,concluido,acertos,total_questoes")
-      .eq("usuario_id",currentUser.id);
-    if(error) throw error;
-    if(data){
-      data.forEach(row=>{
-        if(row.materia==="Plano de estudos"){
-          const i = taskNames.indexOf(row.topico);
-          if(i>=0) tasks[i] = !!row.concluido;
-          stats.acertos = Math.max(stats.acertos,Number(row.acertos)||0);
-          stats.feitas = Math.max(stats.feitas,Number(row.total_questoes)||0);
-        }
-      });
-      saveLocal();
-      renderTasks();
-    }
-    $("syncStatus").textContent = "Progresso carregado da sua conta.";
-  }catch(err){
-    $("syncStatus").textContent = "Não foi possível carregar da nuvem. O progresso local continua disponível. Confira a tabela e as políticas do Supabase.";
-  }
-}
-let cloudTimer;
-async function saveCloudProgress(){
-  if(!supabaseClient || !currentUser) return;
-  clearTimeout(cloudTimer);
-  cloudTimer = setTimeout(async()=>{
-    const rows = taskNames.map((topico,i)=>({
-      usuario_id:currentUser.id,
-      materia:"Plano de estudos",
-      topico,
-      concluido:!!tasks[i],
-      acertos:stats.acertos,
-      total_questoes:stats.feitas,
-      atualizado_em:new Date().toISOString()
-    }));
-    try{
-      const {error} = await supabaseClient.from(TABLE_NAME)
-        .upsert(rows,{onConflict:"usuario_id,materia,topico"});
-      if(error) throw error;
-      $("syncStatus").textContent = "Progresso sincronizado com sua conta.";
-    }catch(err){
-      $("syncStatus").textContent = "Falha ao sincronizar. Verifique se a tabela progresso_estudos e as políticas RLS foram criadas no Supabase.";
-    }
-  },400);
-}
-renderTasks();
-updateStats();
-</script>
-</body>
-</html>
+  <!-- TELA DE LOGIN / CADASTRO -->
+  <section id="authScreen" class="auth-wrapper">
+    <div class="card">
+      <div class="auth-header">
+        <h2 id="authTitle">Acesse sua Conta</h2>
+        <p class="subtitle">Faça login para acompanhar suas metas e simul
