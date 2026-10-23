@@ -540,6 +540,7 @@ footer {
 */
 const SUPABASE_URL = 'https://ftfdbzgaulrpsyyiskdb.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_wvar86h3xMM57aUOa2mUdw_3-leICLP';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 let supabaseClient = null;
 let currentUser = null;
